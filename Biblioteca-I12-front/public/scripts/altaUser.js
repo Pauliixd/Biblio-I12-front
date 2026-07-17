@@ -1,8 +1,10 @@
-// altaUser.js - Maneja la lógica del formulario de Alta de Usuario
+/* altaUser.js - Maneja la lógica del formulario de Alta de Usuario
 import { alertaExito, alertaError } from './alerts.js';
 import {renderizarTablaUsuarios} from './usuarios.js'
 
-import  {obtenerUsuarios, guardarUsuario,CLAVE_USUARIOS, obtenerSiguienteCodigo } from '../bbdd/bd.js';
+//import  {obtenerUsuarios, guardarUsuario,CLAVE_USUARIOS, obtenerSiguienteCodigo } from '../bbdd/bd.js';
+
+import { obtenerUsuarios, guardarUsuario, CLAVE_USUARIOS, obtenerSiguienteCodigo, crearUsuario } from '../bbdd/api.js';
 
 // ELEMENTOS HTML
 const formAltaUsuario = document.getElementById("altaUsuarioForm");
@@ -92,5 +94,68 @@ if (usuarioGuardado) {
     
   } else {
     alertaError('Alta Usuario', 'Error al intentar guardar el usuario.');
+  }
+}); */
+
+// altaUser.js - Maneja la lógica del formulario de Alta de Usuario
+import { alertaExito, alertaError } from './alerts.js';
+import { renderizarTablaUsuarios } from './usuarios.js';
+import { crearUsuario } from '../bbdd/api.js';
+
+// ELEMENTOS HTML
+const formAltaUsuario = document.getElementById("altaUsuarioForm");
+const inputNombre = document.getElementById("nombreYApellido");
+const inputDni = document.getElementById("dni");
+const inputEmail = document.getElementById("email");
+// NOTA: selectCargo se deja en el HTML pero no se usa todavía: el backend
+// no tiene roles cargados ni acepta id_rol al crear un usuario. Cuando esté
+// listo del lado del back, se vuelve a conectar acá.
+const inputPassword1 = document.getElementById("altaPassword");
+const mensajeDiv = document.getElementById("mensaje");
+const modalAltaUsuario = new bootstrap.Modal(document.getElementById('modalAltaUsuario'));
+
+// FUNCIONES
+
+// El backend pide nombre y apellido por separado, pero el form tiene un solo
+// campo "Nombre y Apellido". Se separa tomando la primera palabra como nombre
+// y el resto como apellido. Es una aproximación razonable para nombres
+// simples, pero conviene en algún momento separar esto en dos inputs en el HTML.
+function separarNombreApellido(nombreCompleto) {
+  const partes = nombreCompleto.trim().split(/\s+/);
+  const nombre = partes[0] || "";
+  const apellido = partes.slice(1).join(" ") || nombre;
+  return { nombre, apellido };
+}
+
+// EVENTOS
+
+formAltaUsuario.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  mensajeDiv.textContent = "";
+
+  const nombreYApellido = inputNombre.value.trim();
+  const dni = inputDni.value.trim();
+  const email = inputEmail.value.trim();
+
+  // Validaciones básicas (se mantienen igual que antes)
+  if (!nombreYApellido || !dni || !email) {
+    mensajeDiv.textContent = "Por favor, completá todos los campos.";
+    return;
+  }
+
+  const { nombre, apellido } = separarNombreApellido(nombreYApellido);
+
+  try {
+    // La contraseña inicial es el propio DNI (misma regla que antes).
+    await crearUsuario({ dni, nombre, apellido, email });
+
+    formAltaUsuario.reset();
+    modalAltaUsuario.hide();
+    alertaExito('Alta Usuario', `Usuario ${nombreYApellido} registrado con éxito.`);
+
+    await renderizarTablaUsuarios();
+  } catch (err) {
+    // El backend devuelve 400 si el DNI (username) o el email ya existen
+    alertaError('Alta Usuario', err.message || 'Error al intentar guardar el usuario.');
   }
 });
