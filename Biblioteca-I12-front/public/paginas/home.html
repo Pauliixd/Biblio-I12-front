@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Insumos</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="../multimedia/logo.png" alt="Logo" class="d-inline-block align-text-top me-2"
+          style="height: 40px" />
+        Gestión de Insumos - Biblioteca ISFT Nº12
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="home.html" id="linkInicio">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./insumos.html" id="linkInsumos">Insumos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./prestamos.html" id="linkPrestamos">Préstamos</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="./usuarios.html" id="linkUsuarios">Usuarios</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="../index.html" id="linkIndex">Salir</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <div class="row text-center mb-4 g-3">
+      <div class="col-md-3">
+        <div class="card p-3">
+          <h5 class="card-title text-muted">Total de insumos disponibles</h5>
+          <h2 class="card-text fw-bold" id="totalInsumos">0</h2>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card p-3">
+          <h5 class="card-title text-muted">Insumos prestados actualmente</h5>
+          <h2 class="card-text fw-bold" id="insumosPrestados">0</h2>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card p-3">
+          <h5 class="card-title text-muted">
+            Insumos en reparación
+          </h5>
+          <h2 class="card-text fw-bold" id="insumosReparacion">0</h2>
+        </div>
+      </div>
+      
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3>Listado de insumos</h3>
+      <button class="btn btn-danger" id="btnNuevoPrestamo" data-bs-toggle="modal" data-bs-target="#modalPrestamo">
+        <i class="bi bi-box-arrow-in-right"></i> Nuevo préstamo
+      </button>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <input type="text" class="form-control" id="inputBuscar" name="buscar" placeholder="Buscar por nombre..." />
+      </div>
+
+      <div class="col-md-2">
+        <select class="form-select" id="selectEstado" name="estado">
+          <option selected disabled>Estado</option>
+          <option value="dispo" selected>Disponible</option>
+          <option value="noDispo">No disponible</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-responsive" id="listaInsumos"></div>
+
+    <div class="modal fade" id="modalPrestamo" tabindex="-1" aria-labelledby="modalPrestamoLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalPrestamoLabel">
+              Registrar nuevo préstamo
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+
+          <div class="modal-body">
+            <form id="formPrestamo">
+              <div class="mb-3">
+                <label for="inputDestinatario" class="form-label">Destinatario</label>
+                <input type="text" class="form-control" id="inputDestinatario" maxlength="20" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="inputFecha" class="form-label">Fecha del préstamo</label>
+                <input type="date" class="form-control" id="inputFecha" required />              
+              </div>
+              
+              <div>   <div class="col-12">
+             <label class="form-label fw-bold">Observación</label>
+             <textarea class="form-control mb-3" id="Observacion_pres" maxlength="50" ></textarea>
+               </div>
+
+
+
+              <button type="submit" class="btn btn-danger w-100">
+                Guardar préstamo
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <script src="../scripts/front.js" type="module"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+</body>
+
+</html>

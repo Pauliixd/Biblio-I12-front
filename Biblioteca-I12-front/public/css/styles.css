@@ -1,0 +1,169 @@
+/* Estilos personalizados para sobrescribir los de Bootstrap */
+.bg-dark {
+    background-color: #ffffff !important;
+}
+
+.btn-dark {
+    background-color: #555 !important;
+    border-color: #555 !important;
+}
+
+.btn-dark:hover {
+    background-color: #333 !important;
+    border-color: #333 !important;
+}
+
+.text-danger {
+    color: #cc0000 !important;
+}
+
+/* Clases para el tamaño y los estilos del contenedor principal */
+.login-box {
+    max-width: 1000px;
+}
+
+/* Clase para el tamaño de la imagen del logo */
+.logo-img {
+    max-width: 120px;
+}
+
+/* Clase para el tamaño del contenedor del formulario */
+.login-form-wrapper {
+    max-width: 400px;
+}
+
+/* Estilos específicos para la página de insumos */
+        .card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+/*para insumos*/
+#insumosTabla th {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+#insumosTabla td {
+  vertical-align: middle;
+}
+
+#insumosTabla tbody tr:hover td {
+  background-color: #e6e6e6 !important;
+  transition: background-color 0.3s;
+}
+
+#listaInsumos {
+  width: 100%;
+  overflow-x: auto;
+}
+
+#listaInsumos table {
+  white-space: nowrap;
+}
+
+
+.table-responsive {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  border-radius: 10px;
+}
+
+/*para la pantalla verUser*/
+
+/* Colores personalizados */
+.btn-rojo-suave {
+  background-color: #d24c4c; /* Color principal del botón */
+  color: #fff;
+  border: none;
+  transition: all 0.2s ease-in-out;
+}
+.btn-rojo-suave:hover {
+  background-color: #b13333; /* Color de hover */
+  color: #fff;
+}
+
+/* NUEVA CLASE PARA FONDOS  */
+.bg-rojo-suave {
+  background-color: #efecec !important; /* Uso !important para asegurarme que sobrescribe Bootstrap :p */
+}
+
+/* Estilo tabla */
+.table {
+  border-collapse: separate !important;
+  border-spacing: 0;
+}
+
+.table thead th {
+  border: none;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table tbody td {
+  padding: 12px 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.table tbody tr {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.table tbody tr:hover {
+  background-color: #bdb6b6 !important;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Card contenedora */
+.card {
+  background-color: #ffffff;
+  min-height: 140px;           /* Altura mínima igual para todas */
+  display: flex;               /* Centra el contenido */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;         /* Bordes más suaves */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Sombra leve */
+}
+
+.card h5 {
+  font-size: 0.95rem;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.card h2 {
+  font-size: 2rem;
+  margin: 0;
+  color: #212529;
+}
+
+@media (max-width: 768px) {
+  .card {
+    min-height: 120px; /* Más compacto en pantallas chicas */
+  }
+}
+
+/* Acciones dentro de la tabla */
+.action-btn {
+  border: none;
+  background:#d44141 ;
+  color: #fbfbfb;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.action-btn:hover {
+  background: #931f1f;
+  color: #ffffff;
+}
+
+/* btn de gestion de prestamo */
+.btn-moroso{
+  background-color: #d24c4c;
+  color: #ffffff; 
+}

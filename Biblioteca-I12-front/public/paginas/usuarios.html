@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usuarios - Gestión de Usuarios</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="../multimedia/logo.png" alt="Logo" class="d-inline-block align-text-top me-2"
+          style="height: 40px" />
+        Gestión de Usuarios - Biblioteca ISFT Nº12
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="home.html" id="linkInicio">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./insumos.html" id="linkInsumos">Insumos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./prestamos.html" id="linkPrestamos">Préstamos</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="./usuarios.html" id="linkUsuarios">Usuarios</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="../index.html" id="linkIndex">Salir</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold">
+        <img src="../multimedia/logo i12 fondo blanco.png" alt="Logo" class="d-inline-block align-text-top me-2"
+          style="height: 40px" />
+        Gestión de Usuarios
+      </h2>
+    </div>
+
+    <!-- Barra de búsqueda y botón -->
+    <div class="row mb-3">
+      <div class="col-md-5 mb-3">
+        <!--<input type="text" class="form-control" id="inputBuscar" placeholder="Buscar Usuario por nombre..." /> -->
+      </div>
+      <div class="col-md-7 text-md-end text-center">
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalAltaUsuario">
+          <i class="bi bi-person-plus"></i> Nuevo Usuario
+        </button>
+      </div>
+
+    </div>
+
+    <div class="table-responsive mt-4">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>Nombre y Apellido</th>
+            <th>DNI</th>
+            <th>Email</th>
+            <th>Cargo</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="usuariosTableBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+  </div>
+
+
+    <!-- MODAL EDITAR Usuario -->
+  <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-labelledby="modalEditarUsuarioLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEditarUsuarioLabel">
+            Editar Usuario
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <form class="row g-3" id="formEditarUsuario">
+            <input type="hidden" id="editCodigo" />
+            <div class="col-12">
+              <label for="editNombre" class="form-label fw-bold">Nombre Y Apellido</label>
+              <input type="text" class="form-control" id="editNombreYApellido" maxlength="30" required />
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold">Cargo</label>
+        <select class="form-select" id="editCargo" required>
+            <option>Bibliotecario</option>
+            <option>Secretario</option>
+            <option>Admin</option>
+        </select>
+
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold">Email</label>
+              <input type="text" class="form-control" id="editEmail" required />
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold">Password</label>
+              <input type="text" class="form-control" id="editPasswordSystem" required />
+            </div>
+            <div class="mt-4 d-flex justify-content-center">
+              <button type="submit" class="btn btn-danger me-2" id="submitEditarUsuario">
+                Guardar cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="modal fade" id="modalAltaUsuario" tabindex="-1" aria-labelledby="modalAltaUsuarioLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="modal-header bg-rojo-suave rounded-top-4">
+          <h5 class="modal-title d-flex align-items-center gap-2" id="modalAltaUsuarioLabel">
+            <img src="../multimedia/logo.png" alt="Logo" style="height: 40px" class="rounded" />
+            <span class="fw-semibold">Alta de Usuario</span>
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="modal-body p-4 bg-light-subtle">
+          <form id="altaUsuarioForm" class="needs-validation" novalidate>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="nombreYApellido" class="form-label fw-semibold">Apellido y Nombre</label>
+                <input type="text" class="form-control border-secondary-subtle" id="nombreYApellido"
+                  placeholder="Ej: García Sofía" maxlength="30" required />
+              </div>
+
+              <div class="col-md-6">
+                <label for="dni" class="form-label fw-semibold">DNI</label>
+                <input type="number" class="form-control border-secondary-subtle" id="dni"
+                  placeholder="Sin puntos ni espacios" required />
+              </div>
+
+              <div class="col-md-6">
+                <label for="email" class="form-label fw-semibold">Email</label>
+                <input type="email" class="form-control border-secondary-subtle" id="email"
+                  placeholder="usuario@ejemplo.com" required />
+              </div>
+
+              <div class="col-md-6">
+                <label for="cargo" class="form-label fw-semibold">Cargo</label>
+                <select class="form-select border-secondary-subtle" id="cargo" required>
+                  <option selected disabled>Seleccionar</option>
+                  <option value="Bibliotecario">Bibliotecario</option>
+                  <option value="Secretario">Secretario</option>
+                  <option value="Admin">Admin</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label for="altaPassword" class="form-label fw-semibold">Contraseña</label>
+                <input type="password" class="form-control border-secondary-subtle" id="altaPassword"
+                  placeholder="Contraseña" required />
+              </div>
+              
+              <div class="text-center mt-4">
+                <button type="submit" class="btn btn-rojo-suave px-5 py-2 rounded-pill shadow-sm">
+                  <i class="bi bi-person-plus"></i> Crear Usuario
+                </button>
+              </div>
+
+              <div class="mt-3 text-center">
+                <p id="mensaje" class="text-danger fw-semibold"></p>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script type="module" src="../scripts/altaUser.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
