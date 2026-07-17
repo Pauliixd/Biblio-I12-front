@@ -1,6 +1,7 @@
 // prestamos.js
 
-import { obtenerPrestamosPorEstado, actualizarEstadoPrestamo, marcarComoDevuelto } from "../bbdd/bd.js";
+//import { obtenerPrestamosPorEstado, actualizarEstadoPrestamo, marcarComoDevuelto } from "../bbdd/bd.js";
+import { obtenerPrestamosPorEstado, actualizarEstadoPrestamo, marcarComoDevuelto } from "../bbdd/api.js";
 import { crearTablaGeneral, buscarInsumo } from "./funciones.js"
 
 // ELEMENTOS HTML (asegurate que los IDs existan en tu prestamos.html)
@@ -74,8 +75,8 @@ function confirmarMoroso(idTransaccion, insumoNombre) {
 }
 
 
-function renderizarTablas() {
-  const { activos, morosos, devueltos } = obtenerPrestamosPorEstado();
+async function renderizarTablas() {
+  const { activos, morosos, devueltos } = await obtenerPrestamosPorEstado();
 
   const textoBusqueda = inputBuscar.value.trim().toLowerCase();
 

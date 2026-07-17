@@ -2,7 +2,10 @@
 
 // IMPORTS
 
-import { guardarPrestamo,actualizarInsumosPrestados,obtenerInsumos } from "../bbdd/bd.js";
+//import { guardarPrestamo,actualizarInsumosPrestados,obtenerInsumos } from "../bbdd/bd.js";
+
+import { obtenerInsumos } from "../bbdd/api.js";
+
 
 
 import { crearTablaGeneral, buscarInsumo  } from "./funciones.js";
@@ -27,7 +30,7 @@ const modalPrestamo = new bootstrap.Modal(document.getElementById('modalPrestamo
 
 // VARIABLES
 let insumosSeleccionados = [];
-let insumosActuales = obtenerInsumos(); // Inicializar con todos los insumos
+let insumosActuales = await obtenerInsumos(); // Inicializar con todos los insumos
 
 const columnasInsumos = [
   { clave: "codigo", texto: "Código" },
@@ -59,9 +62,9 @@ function obtenerInsumosSeleccionados() {
   return seleccionados;
 }
 
-function renderizarTabla() {
+async function renderizarTabla() {
   listaInsumos.innerHTML = ""; 
-  insumosActuales = obtenerInsumos();
+  insumosActuales = await obtenerInsumos();
   let mostrarDisponibles = estadoActual();
   let textoBusqueda = inputBuscar.value.trim();
 
@@ -93,8 +96,8 @@ function renderizarTabla() {
 
 // ----- Funcionalidad para los cuadros informativos de inicio ----------
 
-function actualizarContadores() {
-  const insumos = obtenerInsumos();
+async function actualizarContadores() {
+  const insumos = await obtenerInsumos();
 
   let disponibles = 0;
   let prestados = 0;
@@ -120,8 +123,8 @@ insumosReparacion.textContent = enReparacion;
 
 // EVENTOS
 
-actualizarContadores();
-renderizarTabla();
+await actualizarContadores();
+await renderizarTabla();
 
 
 // Filtro de estado
@@ -131,7 +134,7 @@ selectEstado.addEventListener("change", renderizarTabla);
 inputBuscar.addEventListener("input", renderizarTabla);
 
 // Al hacer click en "Nuevo Préstamo" (en el modal)
-btnPrestamo.addEventListener("click", (e) => {
+btnPrestamo.addEventListener("click", async (e) => {
   insumosSeleccionados = obtenerInsumosSeleccionados();
   if (insumosSeleccionados.length === 0) {
     e.preventDefault(); // Previene que el modal se abra si no hay selección
@@ -142,7 +145,7 @@ btnPrestamo.addEventListener("click", (e) => {
 });
 
 // Al enviar el formulario de préstamo
-formPrestamo.addEventListener("submit", (e) => {
+formPrestamo.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const nombre = inputDestinatario.value.trim();

@@ -56,10 +56,7 @@ export function obtenerInsumos() {
   let insumos = obtenerArray(CLAVE_INSUMOS);
   if (insumos.length === 0) {
     insumos = [
-      { codigo: 1, nombre: "Zapatilla", estado: "Disponible", observacion: "" },
-      { codigo: 2, nombre: "Zapatilla", estado: "Disponible", observacion: "" },
-      { codigo: 3, nombre: "Borrador", estado: "Fuera de Servicio", observacion: "Daño por calor" },
-      { codigo: 4, nombre: "Casco", estado: "Disponible", observacion: "" },
+      
     ];
     guardarArray(insumos, CLAVE_INSUMOS);
   }

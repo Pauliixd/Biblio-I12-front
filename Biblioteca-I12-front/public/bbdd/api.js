@@ -5,9 +5,8 @@
 const BASE_URL = "http://localhost:8000"; // cambiar si el back corre en otro puerto/host
 
 // ---------------------------------------------------------
-// IDs fijos de EstadoInsumo (ver seed_estados.py en el back).
-// Mientras no exista un endpoint /estados/, se hardcodean acá.
-// ---------------------------------------------------------
+// IDs fijos de EstadoInsumo 
+
 export const ESTADOS_INSUMO = {
   "Disponible": 1,
   "No Disponible": 2,
@@ -138,8 +137,9 @@ export async function crearUsuario({ dni, nombre, apellido, email }) {
 
 // Actualiza datos de un usuario existente.
 // datos puede incluir: { nombre, apellido, email }
-// OJO: el backend (UserUpdate) no permite resetear la contraseña de otro usuario
-// desde acá, ni cambiar el username/dni. Eso son features aparte si hacen falta.
+
+// desde acá, ni cambiar el username/dni. 
+
 export async function actualizarUsuario(dni, datos) {
   return pedido(`${BASE_URL}/users/${dni}`, {
     method: "PUT",
@@ -247,11 +247,62 @@ export async function eliminarInsumo(id) {
 }
 
 // ---------------------------------------------------------
-// PRÉSTAMOS (todavía no integrado a propósito, ver conversación)
+// PRÉSTAMOS
 // ---------------------------------------------------------
-export async function guardarPrestamo(prestamo) {
-  throw new Error(
-    "guardarPrestamo todavía no está migrado: falta resolver destinatario, " +
-    "estado y el id real del insumo antes de mandarlo al backend."
-  );
+export async function guardarPrestamo({ id_insumo, id_destinatario, fecha_entrega, obs }) {
+  const body = {
+    id_insumo,
+    id_destinatario,
+    fecha_entrega,
+    obs: obs || "",
+  };
+
+  return pedido(`${BASE_URL}/prestamos/`, {
+    method: "POST",
+    headers: headersAuth(),
+    body: JSON.stringify(body),
+  });
 }
+
+export async function adaptarPrestamo(prestamo) {
+  // Trae el insumo para obtener su código y nombre
+  const insumo = await pedido(`${BASE_URL}/insumos/${prestamo.id_insumo}`, {
+    method: "GET",
+    headers: headersAuth(),
+  });
+
+  return {
+    ...prestamo,
+    insumo: insumo.nombre,
+    codigo_insumo: insumo.codigo
+  };
+}
+
+export async function obtenerPrestamosPorEstado() {
+  const prestamos = await pedido(`${BASE_URL}/prestamos/`, {
+    method: "GET",
+    headers: headersAuth(),
+  });
+  return prestamo
+}
+
+export async function actualizarEstadoPrestamo(id, nuevoEstado) {
+  const body = { estado: nuevoEstado };
+  return pedido(`${BASE_URL}/prestamos/${id}`, {
+    method: "PUT",
+    headers: headersAuth(),
+    body: JSON.stringify(body),
+  });
+}
+
+export async function marcarComoDevuelto(id) {
+  //liberar el insumo asociado al préstamo
+  await pedido(`${BASE_URL}/prestamos/${id}/devolver`, {
+    method: "POST",
+    headers: headersAuth(),
+  });
+  
+  return actualizarEstadoPrestamo(id, "devuelto");
+}
+
+
