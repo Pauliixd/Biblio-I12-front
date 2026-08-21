@@ -338,8 +338,8 @@ function abrirModalEditarInsumo(insumo) {
   editEstado.value = insumo.estado;
   editObservacion.value = insumo.observacion || '';
 
-  if (insumo.estado === "No Disponible") {
-    alertaError("No se puede modificar un insumo no disponible");
+  if (insumo.estado === "Prestado") {
+    alertaError("No se puede modificar un insumo Prestado");
     return;
   }
 

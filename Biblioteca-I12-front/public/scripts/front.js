@@ -4,7 +4,7 @@
 
 //import { guardarPrestamo,actualizarInsumosPrestados,obtenerInsumos } from "../bbdd/bd.js";
 
-import { obtenerInsumos } from "../bbdd/api.js";
+import { obtenerInsumos, guardarPrestamo } from "../bbdd/api.js";
 
 
 
@@ -29,7 +29,8 @@ const insumosReparacion = document.getElementById("insumosReparacion")
 const modalPrestamo = new bootstrap.Modal(document.getElementById('modalPrestamo')); // Instancia del modal de Bootstrap
 
 // VARIABLES
-let insumosSeleccionados = [];
+// let insumosSeleccionados = [];
+let insumosSeleccionados = new Map(); // codigo -> insumo completo
 let insumosActuales = await obtenerInsumos(); // Inicializar con todos los insumos
 
 const columnasInsumos = [
@@ -47,7 +48,7 @@ function estadoActual() {
     return false;
   }
 }
-
+/*
 function obtenerInsumosSeleccionados() {
   // crearTablaGeneral no le pone ID, por eso se busca dentro de listaInsumos.
   const checkboxes = listaInsumos.querySelectorAll('input[type="checkbox"]:checked');
@@ -59,6 +60,25 @@ function obtenerInsumosSeleccionados() {
     const nombre = fila.querySelector("td:nth-child(3)").textContent;
     seleccionados.push({ codigo: parseInt(codigo), nombre });
   });
+  return seleccionados;
+}
+  */
+function obtenerInsumosSeleccionados() {
+  const checkboxes = listaInsumos.querySelectorAll('input[type="checkbox"]:checked');
+  const seleccionados = [];
+
+  checkboxes.forEach((checkbox) => {
+    const fila = checkbox.closest("tr");
+    // Obtenemos el código mostrado en la segunda celda (ej: INS-0001)
+    const codigoTexto = fila.querySelector("td:nth-child(2)").textContent.trim();
+    
+    // Buscamos el insumo completo dentro de la lista actual en memoria
+    const insumoEncontrado = insumosActuales.find(ins => ins.codigo === codigoTexto);
+    if (insumoEncontrado) {
+      seleccionados.push(insumoEncontrado);
+    }
+  });
+
   return seleccionados;
 }
 
@@ -84,11 +104,21 @@ async function renderizarTabla() {
   let tabla;
   insumosFiltrados = buscarInsumo(insumosFiltrados, textoBusqueda);
 
-  if(insumosFiltrados.length > 0){
-    tabla = crearTablaGeneral(insumosFiltrados, columnasInsumos, { seleccionar: true });
-  }else{
-     tabla = crearTablaGeneral(insumosFiltradosNoDispo, columnasInsumos, { seleccionar: false });
-  }
+  if (insumosFiltrados.length > 0) {
+  tabla = crearTablaGeneral(insumosFiltrados, columnasInsumos, {
+    seleccionar: true,
+    seleccionados: new Set(insumosSeleccionados.keys()),
+    onToggle: (insumo, checked) => {
+      if (checked) {
+        insumosSeleccionados.set(insumo.codigo, insumo);
+      } else {
+        insumosSeleccionados.delete(insumo.codigo);
+      }
+    }
+  });
+} else {
+  tabla = crearTablaGeneral(insumosFiltradosNoDispo, columnasInsumos, { seleccionar: false });
+}
 
   listaInsumos.appendChild(tabla);
 }
@@ -135,16 +165,15 @@ inputBuscar.addEventListener("input", renderizarTabla);
 
 // Al hacer click en "Nuevo Préstamo" (en el modal)
 btnPrestamo.addEventListener("click", async (e) => {
-  insumosSeleccionados = obtenerInsumosSeleccionados();
-  if (insumosSeleccionados.length === 0) {
-    e.preventDefault(); // Previene que el modal se abra si no hay selección
-    alertaAdvertencia('Atención','Seleccioná al menos un insumo disponible.')
+  if (insumosSeleccionados.size === 0) {
+    e.preventDefault();
+    alertaAdvertencia('Atención','Seleccioná al menos un insumo disponible.');
     return;
   }
-  // Si hay insumos, el modal se abre por el data-bs-toggle
 });
 
 // Al enviar el formulario de préstamo
+/*
 formPrestamo.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -187,4 +216,40 @@ for (let i = 0; i < insumosSeleccionados.length; i++) {
   alertaExito('Préstamo registrado','El préstamo se registró correctamente.')
 
 
+});
+*/
+formPrestamo.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const nombreDestinatario = inputDestinatario.value.trim();
+  const fecha = inputFecha.value;
+  const observacion = inputobservacion.value;
+
+  if (insumosSeleccionados.size === 0) {
+    alertaAdvertencia('Sin selección', 'No hay insumos seleccionados para el préstamo.');
+    return;
+  }
+
+  try {
+    for (const insumo of insumosSeleccionados.values()) {
+      await guardarPrestamo({
+        id_insumo: insumo.id,
+        id_destinatario: nombreDestinatario,
+        fecha_entrega: fecha,
+        obs: observacion,
+      });
+    }
+
+    formPrestamo.reset();
+    insumosSeleccionados.clear();
+
+    await renderizarTabla();
+    await actualizarContadores();
+
+    modalPrestamo.hide();
+
+    alertaExito('Préstamo registrado', 'El préstamo se registró correctamente.');
+  } catch (error) {
+    alertaError(error.message || 'Ocurrió un error al registrar el préstamo.');
+  }
 });

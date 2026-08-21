@@ -3,6 +3,8 @@
 export function crearTablaGeneral(datos, columnas, opciones) {
   const seleccionar = opciones && opciones.seleccionar;
   const acciones = opciones && opciones.acciones;
+  const seleccionados = (opciones && opciones.seleccionados) || new Set(); // códigos ya seleccionados
+  const onToggle = opciones && opciones.onToggle; // (item, checked) => void
 
   const tabla = document.createElement("table");
   tabla.className = "table table-hover align-middle";
@@ -11,21 +13,18 @@ export function crearTablaGeneral(datos, columnas, opciones) {
   const tbody = document.createElement("tbody");
   const trHead = document.createElement("tr");
 
-  // Encabezado de "Seleccionar"
   if (seleccionar) {
     const th = document.createElement("th");
     th.textContent = "Seleccionar";
     trHead.appendChild(th);
   }
 
-  // Encabezados de columnas
   for (let i = 0; i < columnas.length; i++) {
     const th = document.createElement("th");
     th.textContent = columnas[i].texto;
     trHead.appendChild(th);
   }
 
-  // Encabezado de "Acciones"
   if (acciones) {
     const th = document.createElement("th");
     th.textContent = "Acciones";
@@ -34,7 +33,6 @@ export function crearTablaGeneral(datos, columnas, opciones) {
 
   thead.appendChild(trHead);
 
-  // Filas de datos
   for (let i = 0; i < datos.length; i++) {
     const tr = document.createElement("tr");
     const item = datos[i];
@@ -43,6 +41,19 @@ export function crearTablaGeneral(datos, columnas, opciones) {
       const td = document.createElement("td");
       const check = document.createElement("input");
       check.type = "checkbox";
+      check.dataset.codigo = item.codigo;
+
+      // Restaurar el tilde si este insumo ya estaba seleccionado antes del render
+      if (seleccionados.has(item.codigo)) {
+        check.checked = true;
+      }
+
+      check.addEventListener("change", () => {
+        if (onToggle) {
+          onToggle(item, check.checked);
+        }
+      });
+
       td.appendChild(check);
       tr.appendChild(td);
     }

@@ -10,12 +10,14 @@ const BASE_URL = "http://localhost:8000"; // cambiar si el back corre en otro pu
 export const ESTADOS_INSUMO = {
   "Disponible": 1,
   "No Disponible": 2,
+  "Prestado": 3,
 };
 
 // Mapa inverso, para mostrar el nombre del estado a partir del id
 const ESTADOS_INSUMO_POR_ID = Object.fromEntries(
   Object.entries(ESTADOS_INSUMO).map(([nombre, id]) => [id, nombre])
 );
+
 
 // ---------------------------------------------------------
 // MANEJO DEL TOKEN (JWT)
@@ -57,14 +59,20 @@ async function pedido(url, opciones) {
     let detalle = "";
     try {
       const data = await res.json();
-      detalle = data.detail || JSON.stringify(data);
+      if (Array.isArray(data.detail)) {
+        // Errores de validación de FastAPI (422)
+        detalle = data.detail
+          .map(e => `${e.loc?.join(".")}: ${e.msg}`)
+          .join(" | ");
+      } else {
+        detalle = data.detail || JSON.stringify(data);
+      }
     } catch {
       detalle = res.statusText;
     }
     throw new Error(detalle || "Error en el pedido al backend");
   }
 
-  // DELETE en /insumos/ y algunas respuestas pueden no traer body
   const texto = await res.text();
   return texto ? JSON.parse(texto) : null;
 }
@@ -251,10 +259,10 @@ export async function eliminarInsumo(id) {
 // ---------------------------------------------------------
 export async function guardarPrestamo({ id_insumo, id_destinatario, fecha_entrega, obs }) {
   const body = {
-    id_insumo,
-    id_destinatario,
-    fecha_entrega,
-    obs: obs || "",
+    id_insumo: Number(id_insumo),
+    id_destinatario: String(id_destinatario),
+    fecha_entrega: fecha_entrega, // "YYYY-MM-DD"
+    obs: obs || ""
   };
 
   return pedido(`${BASE_URL}/prestamos/`, {
@@ -283,26 +291,38 @@ export async function obtenerPrestamosPorEstado() {
     method: "GET",
     headers: headersAuth(),
   });
-  return prestamo
+  return prestamos;
 }
 
 export async function actualizarEstadoPrestamo(id, nuevoEstado) {
-  const body = { estado: nuevoEstado };
-  return pedido(`${BASE_URL}/prestamos/${id}`, {
+  return pedido(`${BASE_URL}/prestamos/${id}/estado?estado=${nuevoEstado}`, {
     method: "PUT",
     headers: headersAuth(),
-    body: JSON.stringify(body),
   });
 }
 
 export async function marcarComoDevuelto(id) {
-  //liberar el insumo asociado al préstamo
-  await pedido(`${BASE_URL}/prestamos/${id}/devolver`, {
+  return pedido(`${BASE_URL}/prestamos/${id}/devolver`, {
     method: "POST",
     headers: headersAuth(),
   });
-  
-  return actualizarEstadoPrestamo(id, "devuelto");
+}
+
+export async function obtenerPrestamos() {
+  const prestamos = await pedido(`${BASE_URL}/prestamos/`, {
+    method: "GET",
+    headers: headersAuth(),
+  });
+  return prestamos;
+}
+
+export async function actualizarInsumosPrestados(insumosPrestados) {
+  for (const insumo of insumosPrestados) {
+    await pedido(`${BASE_URL}/insumos/${insumo.id}/prestar`, {
+      method: "POST",
+      headers: headersAuth(),
+    });
+  }
 }
 
 
