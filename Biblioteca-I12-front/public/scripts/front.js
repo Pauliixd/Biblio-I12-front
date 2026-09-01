@@ -117,6 +117,7 @@ async function renderizarTabla() {
     }
   });
 } else {
+  buscarInsumo(insumosFiltradosNoDispo, textoBusqueda);
   tabla = crearTablaGeneral(insumosFiltradosNoDispo, columnasInsumos, { seleccionar: false });
 }
 

@@ -132,7 +132,8 @@ async function renderizarTablas() {
       filtrarPorDestinatario(morosos);
 
     const devueltosFiltrados =
-      filtrarPorDestinatario(devueltos);
+      filtrarPorDestinatario(devueltos)
+        .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
 
     // Limpiar contenedores
