@@ -24,9 +24,35 @@ const inputobservacion = document.getElementById ("Observacion_pres")
 const totalInsumos = document.getElementById("totalInsumos")
 const insumosPrestados = document.getElementById("insumosPrestados")
 const insumosReparacion = document.getElementById("insumosReparacion")
+const badgeSeleccionados = document.getElementById("badgeSeleccionados");
 
 
 const modalPrestamo = new bootstrap.Modal(document.getElementById('modalPrestamo')); // Instancia del modal de Bootstrap
+
+// ELEMENTOS HTML para el tipo de destinatario
+const selectTipoDestinatario = document.getElementById("selectTipoDestinatario");
+const datosEstudiante = document.getElementById("datosEstudiante");
+
+const inputCarrera = document.getElementById("inputCarrera");
+const inputAnio = document.getElementById("inputAnio");
+const inputCurso = document.getElementById("inputCurso");
+const inputACargo = document.getElementById("inputACargo");
+
+// Event listener para mostrar/ocultar campos según el tipo de destinatario
+selectTipoDestinatario.addEventListener("change", () => {
+
+  if (selectTipoDestinatario.value === "estudiante") {
+    datosEstudiante.style.display = "block";
+  } else {
+    datosEstudiante.style.display = "none";
+
+    inputCarrera.value = "";
+    inputAnio.value = "";
+    inputCurso.value = "";
+    inputACargo.value = "";
+  }
+
+});
 
 // VARIABLES
 // let insumosSeleccionados = [];
@@ -34,9 +60,7 @@ let insumosSeleccionados = new Map(); // codigo -> insumo completo
 let insumosActuales = await obtenerInsumos(); // Inicializar con todos los insumos
 
 const columnasInsumos = [
-  { clave: "codigo", texto: "Código" },
-  { clave: "nombre", texto: "Nombre" },
-  { clave: "estado", texto: "Estado" },
+  { clave: "nombre_completo", texto: "Insumo" },
 ];
 
 // FUNCIONES
@@ -47,6 +71,13 @@ function estadoActual() {
   } else {
     return false;
   }
+}
+
+function actualizarBadgeSeleccionados() {
+  const cantidad = insumosSeleccionados.size;
+  badgeSeleccionados.textContent = cantidad === 1
+    ? "1 insumo seleccionado"
+    : `${cantidad} insumos seleccionados`;
 }
 /*
 function obtenerInsumosSeleccionados() {
@@ -109,12 +140,13 @@ async function renderizarTabla() {
     seleccionar: true,
     seleccionados: new Set(insumosSeleccionados.keys()),
     onToggle: (insumo, checked) => {
-      if (checked) {
-        insumosSeleccionados.set(insumo.codigo, insumo);
-      } else {
-        insumosSeleccionados.delete(insumo.codigo);
-      }
-    }
+  if (checked) {
+    insumosSeleccionados.set(insumo.codigo, insumo);
+  } else {
+    insumosSeleccionados.delete(insumo.codigo);
+  }
+  actualizarBadgeSeleccionados();
+}
   });
 } else {
   buscarInsumo(insumosFiltradosNoDispo, textoBusqueda);
@@ -219,38 +251,76 @@ for (let i = 0; i < insumosSeleccionados.length; i++) {
 
 });
 */
+
 formPrestamo.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const nombreDestinatario = inputDestinatario.value.trim();
+  const tipo = selectTipoDestinatario.value;
+
+  const carrera = tipo === "estudiante"
+    ? inputCarrera.value
+    : null;
+
+  const anio = tipo === "estudiante"
+    ? inputAnio.value
+    : null;
+
+  const curso = tipo === "estudiante"
+    ? inputCurso.value.trim()
+    : null;
+
+  const aCargo = tipo === "estudiante"
+    ? inputACargo.value.trim()
+    : null;
+
   const fecha = inputFecha.value;
   const observacion = inputobservacion.value;
 
   if (insumosSeleccionados.size === 0) {
-    alertaAdvertencia('Sin selección', 'No hay insumos seleccionados para el préstamo.');
+    alertaAdvertencia(
+      "Sin selección",
+      "No hay insumos seleccionados para el préstamo."
+    );
     return;
   }
 
   try {
     for (const insumo of insumosSeleccionados.values()) {
+
       await guardarPrestamo({
         id_insumo: insumo.id,
         id_destinatario: nombreDestinatario,
+        carrera: carrera,
+        anio: anio,
+        curso: curso,
+        a_cargo: aCargo,
         fecha_entrega: fecha,
-        obs: observacion,
+        obs: observacion
       });
+
     }
 
     formPrestamo.reset();
     insumosSeleccionados.clear();
+
+    datosEstudiante.style.display = "none";
+
+    actualizarBadgeSeleccionados();
 
     await renderizarTabla();
     await actualizarContadores();
 
     modalPrestamo.hide();
 
-    alertaExito('Préstamo registrado', 'El préstamo se registró correctamente.');
+    alertaExito(
+      "Préstamo registrado",
+      "El préstamo se registró correctamente."
+    );
+
   } catch (error) {
-    alertaError(error.message || 'Ocurrió un error al registrar el préstamo.');
+    alertaError(
+      error.message || "Ocurrió un error al registrar el préstamo."
+    );
   }
 });

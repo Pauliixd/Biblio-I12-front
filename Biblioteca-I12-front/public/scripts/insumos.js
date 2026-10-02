@@ -21,14 +21,14 @@ const editCodigo = document.getElementById('editCodigo'); // ahora guarda el id 
 const editNombre = document.getElementById('editNombre');
 const editEstado = document.getElementById('editEstado');
 const editObservacion = document.getElementById('editObservacion');
-
+const inputNumeroInventarioAlta = document.getElementById("numeroInventario");
+const inputNumeracionAlta = document.getElementById("numeracion");
 const modalNuevoInsumo = new bootstrap.Modal(document.getElementById('modalNuevoInsumo'));
 const modalEditar = new bootstrap.Modal(document.getElementById('modalEditarInsumo'));
 
 const columnasInsumos = [
-  { clave: "codigo", texto: "Código" },
-  { clave: "nombre", texto: "Nombre" },
-  { clave: "estado", texto: "Estado" },
+  { clave: "numero_inventario", texto: "N.º Inventario" },
+  { clave: "nombre_completo", texto: "Nombre" },
   { clave: "observacion", texto: "Observación" },
 ];
 
@@ -38,34 +38,34 @@ function crearBotoneraAcciones(insumo) {
   const div = document.createElement('div');
   div.className = 'btn-group btn-group-sm';
 
-  const btnEditar = document.createElement('button');
-  btnEditar.className = 'btn btn-outline-primary';
-  btnEditar.innerHTML = '<i class="bi bi-pencil-square"></i>';
-  btnEditar.title = 'Editar';
-  btnEditar.addEventListener('click', () => abrirModalEditarInsumo(insumo));
+  const estaPrestado = insumo.estado === "Prestado";
 
-  const btnEliminar = document.createElement('button');
-  btnEliminar.className = 'btn btn-outline-danger';
-  btnEliminar.innerHTML = '<i class="bi bi-trash"></i>';
-  btnEliminar.title = 'Eliminar';
+const btnEditar = document.createElement('button');
+btnEditar.className = `btn btn-outline-primary${estaPrestado ? ' btn-deshabilitado' : ''}`;
+btnEditar.innerHTML = '<i class="bi bi-pencil-square"></i>';
+btnEditar.title = estaPrestado ? 'No se puede editar un insumo prestado' : 'Editar';
+btnEditar.disabled = estaPrestado;
+btnEditar.addEventListener('click', () => abrirModalEditarInsumo(insumo));
+
+const btnEliminar = document.createElement('button');
+btnEliminar.className = `btn btn-outline-danger${estaPrestado ? ' btn-deshabilitado' : ''}`;
+btnEliminar.innerHTML = '<i class="bi bi-trash"></i>';
+btnEliminar.title = estaPrestado ? 'No se puede eliminar un insumo prestado' : 'Eliminar';
+btnEliminar.disabled = estaPrestado;
 
   btnEliminar.addEventListener("click", async () => {
-    if (insumo.estado !== "No Disponible") {
-      const ok = await confirmarAccion(
-        "¿Seguro que querés eliminar?",
-        `Insumo: ${String(insumo.nombre).toUpperCase()} (código: ${insumo.codigo})`
-      );
-      if (ok) {
-        try {
-          await eliminarInsumo(insumo.id);
-          alertaExito("Se eliminó correctamente");
-          await renderizarTablaInsumos();
-        } catch (err) {
-          alertaError(err.message || "No se pudo eliminar el insumo");
-        }
+    const ok = await confirmarAccion(
+      "¿Seguro que querés eliminar?",
+      `Insumo: ${String(insumo.nombre).toUpperCase()} (código: ${insumo.codigo})`
+    );
+    if (ok) {
+      try {
+        await eliminarInsumo(insumo.id);
+        alertaExito("Se eliminó correctamente");
+        await renderizarTablaInsumos();
+      } catch (err) {
+        alertaError(err.message || "No se pudo eliminar el insumo");
       }
-    } else {
-      alertaError("No se puede eliminar un insumo no disponible");
     }
   });
 
@@ -151,7 +151,10 @@ formRegistroInsumo.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const nombre = inputNombreAlta.value.trim();
+  const numero_inventario = inputNumeroInventarioAlta.value.trim();
   const cantidad = parseInt(inputCantidadAlta.value);
+  const numeracionValor = inputNumeracionAlta.value.trim();
+  const numeracion = numeracionValor === "" ? undefined : parseInt(numeracionValor);
   const observacion = textareaObservacionAlta.value.trim();
 
   if (isNaN(cantidad) || cantidad < 1) {
@@ -159,21 +162,17 @@ formRegistroInsumo.addEventListener("submit", async (e) => {
     return;
   }
 
-  let insumosCreados = 0;
   try {
-    // Se crean de a uno, en secuencia, para que el código autogenerado
-    // (INS-0001, INS-0002...) no se pise entre sí.
-    for (let i = 0; i < cantidad; i++) {
-      await guardarInsumo({ nombre, observacion });
-      insumosCreados++;
-    }
+    // Un solo request: el backend crea las "cantidad" unidades en una
+    // misma transacción, generando codigo y numeracion sin pisarse entre sí.
+    const resultado = await guardarInsumo({ nombre, numero_inventario, cantidad, numeracion, observacion });
 
     await renderizarTablaInsumos();
     formRegistroInsumo.reset();
     modalNuevoInsumo.hide();
-    alertaExito('Alta exitosa', `${insumosCreados} insumo(s) "${nombre}" registrado(s) con éxito.`);
+    alertaExito('Alta exitosa', resultado.mensaje || `${cantidad} insumo(s) "${nombre}" registrado(s) con éxito.`);
   } catch (err) {
-    alertaError(err.message || `Se crearon ${insumosCreados} de ${cantidad} insumos antes de fallar.`);
+    alertaError(err.message || "No se pudieron crear los insumos.");
     await renderizarTablaInsumos();
   }
 });

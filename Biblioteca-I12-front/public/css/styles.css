@@ -1,4 +1,7 @@
-/* Estilos personalizados para sobrescribir los de Bootstrap */
+/* =========================================================
+   ESTILOS GENERALES
+   ========================================================= */
+
 .bg-dark {
     background-color: #ffffff !important;
 }
@@ -17,153 +20,705 @@
     color: #cc0000 !important;
 }
 
-/* Clases para el tamaño y los estilos del contenedor principal */
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
 .login-box {
     max-width: 1000px;
 }
 
-/* Clase para el tamaño de la imagen del logo */
 .logo-img {
     max-width: 120px;
 }
 
-/* Clase para el tamaño del contenedor del formulario */
 .login-form-wrapper {
     max-width: 400px;
 }
 
-/* Estilos específicos para la página de insumos */
-        .card {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
 
-/*para insumos*/
-#insumosTabla th {
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
+/* =========================================================
+   CARDS
+   ========================================================= */
 
-#insumosTabla td {
-  vertical-align: middle;
-}
-
-#insumosTabla tbody tr:hover td {
-  background-color: #e6e6e6 !important;
-  transition: background-color 0.3s;
-}
-
-#listaInsumos {
-  width: 100%;
-  overflow-x: auto;
-}
-
-#listaInsumos table {
-  white-space: nowrap;
-}
-
-
-.table-responsive {
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-  border-radius: 10px;
-}
-
-/*para la pantalla verUser*/
-
-/* Colores personalizados */
-.btn-rojo-suave {
-  background-color: #d24c4c; /* Color principal del botón */
-  color: #fff;
-  border: none;
-  transition: all 0.2s ease-in-out;
-}
-.btn-rojo-suave:hover {
-  background-color: #b13333; /* Color de hover */
-  color: #fff;
-}
-
-/* NUEVA CLASE PARA FONDOS  */
-.bg-rojo-suave {
-  background-color: #efecec !important; /* Uso !important para asegurarme que sobrescribe Bootstrap :p */
-}
-
-/* Estilo tabla */
-.table {
-  border-collapse: separate !important;
-  border-spacing: 0;
-}
-
-.table thead th {
-  border: none;
-  padding: 12px 16px;
-  font-size: 0.95rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.table tbody td {
-  padding: 12px 16px;
-  border-top: 1px solid #f0f0f0;
-}
-
-.table tbody tr {
-  transition: background-color 0.2s ease-in-out;
-}
-
-.table tbody tr:hover {
-  background-color: #bdb6b6 !important;
-  transition: background-color 0.2s ease-in-out;
-}
-
-/* Card contenedora */
 .card {
-  background-color: #ffffff;
-  min-height: 140px;           /* Altura mínima igual para todas */
-  display: flex;               /* Centra el contenido */
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 12px;         /* Bordes más suaves */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Sombra leve */
+    background-color: #ffffff;
+    border: 1px solid #e6e6e6;
+    border-radius: 12px;
+    min-height: 140px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.09);
+    transform: translateY(-1px);
 }
 
 .card h5 {
-  font-size: 0.95rem;
-  color: #6c757d;
-  margin-bottom: 0.5rem;
-  text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    text-align: center;
 }
 
 .card h2 {
-  font-size: 2rem;
-  margin: 0;
-  color: #212529;
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+    color: #212529;
 }
 
-@media (max-width: 768px) {
-  .card {
-    min-height: 120px; /* Más compacto en pantallas chicas */
-  }
+
+/* =========================================================
+   PESTAÑAS / NAVBAR
+   ========================================================= */
+
+/* Contenedor de las pestañas */
+
+.nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+    gap: 5px;
 }
 
-/* Acciones dentro de la tabla */
+
+/* Cada pestaña */
+
+.nav-tabs .nav-link {
+    color: #6c757d;
+    border: none;
+    border-radius: 8px 8px 0 0;
+
+    padding: 11px 20px;
+
+    font-weight: 500;
+
+    transition: all 0.2s ease;
+}
+
+
+/* Hover */
+
+.nav-tabs .nav-link:hover {
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+
+/* =========================================================
+   PESTAÑA ACTIVA
+   ========================================================= */
+
+.nav-tabs .nav-link.active {
+    color: #d24c4c !important;
+
+    background-color: #ffffff !important;
+
+    border: none !important;
+
+    border-bottom: 3px solid #d24c4c !important;
+
+    font-weight: 600;
+}
+
+/* BOTÓN TEMA */
+.btn-tema {
+    border: 1px solid #d24c4c;
+    color: #d24c4c;
+    background-color: transparent;
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+.btn-tema:hover {
+    background-color: #fdecec;
+    color: #b83b3b;
+}
+
+
+
+/* =========================================================
+   TABLAS
+   ========================================================= */
+
+#listaInsumos .table tbody td {
+    font-size: 1.15rem;
+}
+
+#listaInsumos .table thead th {
+    font-size: 0.95rem;
+}
+
+.table-responsive {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+
+    border-radius: 12px;
+
+    border: 1px solid #e6e6e6;
+
+    background-color: #ffffff;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+
+/* Tabla */
+
+.table {
+    margin-bottom: 0;
+
+    border-collapse: separate !important;
+    border-spacing: 0;
+
+    width: 100%;
+}
+
+
+/* =========================================================
+   ENCABEZADO DE TABLA
+   ========================================================= */
+
+.table thead {
+    background-color: #f8f9fa;
+}
+
+.table thead th {
+    border: none;
+
+    padding: 14px 16px;
+
+    font-size: 0.78rem;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+
+    color: #6c757d;
+
+    white-space: nowrap;
+}
+
+
+/* Primera esquina */
+
+.table thead th:first-child {
+    border-top-left-radius: 12px;
+}
+
+
+/* Última esquina */
+
+.table thead th:last-child {
+    border-top-right-radius: 12px;
+}
+
+
+/* =========================================================
+   CUERPO DE TABLA
+   ========================================================= */
+
+.table tbody td {
+    padding: 14px 16px;
+
+    vertical-align: middle;
+
+    border-top: 1px solid #eeeeee;
+
+    color: #343a40;
+
+    font-size: 0.92rem;
+}
+
+
+/* Filas */
+
+.table tbody tr {
+    transition: all 0.15s ease;
+}
+
+.fila-seleccionable {
+    cursor: pointer;
+}
+
+.fila-seleccionada td {
+    background-color: #fdecec !important;
+    box-shadow: inset 3px 0 0 #d24c4c;
+}
+
+/* =========================================================
+   GRID DE INSUMOS (HOME)
+   ========================================================= */
+
+.insumo-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    background-color: #ffffff;
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+    padding: 14px 16px;
+
+    height: 100%;
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: all 0.15s ease;
+}
+
+.insumo-card-icono {
+    font-size: 1.1rem;
+    color: #d24c4c;
+    flex-shrink: 0;
+}
+
+.insumo-card-nombre {
+    font-size: 0.92rem;
+    color: #343a40;
+    font-weight: 500;
+}
+
+.insumo-card-seleccionable {
+    cursor: pointer;
+}
+
+.insumo-card-seleccionable:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.insumo-card-seleccionada {
+    background-color: #fdecec;
+    border-color: #d24c4c;
+    box-shadow: inset 0 0 0 1px #d24c4c;
+}
+
+
+/* Hover */
+
+.table tbody tr:hover {
+    background-color: #fafafa !important;
+}
+
+
+/* Evita el gris de Bootstrap */
+
+.table tbody tr:hover td {
+    background-color: transparent !important;
+}
+
+
+/* =========================================================
+   CÓDIGO DE INSUMO
+   ========================================================= */
+
+.codigo-insumo {
+    font-family: monospace;
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
+
+    color: #555;
+
+    background-color: #f3f3f3;
+
+    padding: 5px 8px;
+
+    border-radius: 6px;
+}
+
+/* =========================================================
+   INPUT GROUPS - MODAL INSUMOS
+   ========================================================= */
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+    }
+
+.form-control:focus {
+    border-color: #d24c4c;
+    box-shadow: 0 0 0 0.25rem rgba(210, 76, 76, 0.15);
+}
+
+
+/* =========================================================
+   ESTADOS
+   ========================================================= */
+
+.estado {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 0.78rem;
+
+    font-weight: 600;
+}
+
+
+/* Disponible */
+
+.estado-disponible {
+    background-color: #e8f5e9;
+
+    color: #2e7d32;
+}
+
+
+/* Prestado */
+
+.estado-prestado {
+    background-color: #fff3cd;
+
+    color: #856404;
+}
+
+
+/* Moroso */
+
+.estado-moroso {
+    background-color: #fdecec;
+
+    color: #c62828;
+}
+
+
+/* Devuelto */
+
+.estado-devuelto {
+    background-color: #e9f2ff;
+
+    color: #245ea8;
+}
+
+
+/* =========================================================
+   BOTONES DE ACCIÓN
+   ========================================================= */
+
 .action-btn {
-  border: none;
-  background:#d44141 ;
-  color: #fbfbfb;
-  cursor: pointer;
-  transition: color 0.2s ease;
+    border: none;
+
+    background: #d44141;
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    padding: 6px 10px;
+
+    border-radius: 6px;
+
+    font-size: 0.82rem;
+
+    transition: all 0.2s ease;
 }
 
 .action-btn:hover {
-  background: #931f1f;
-  color: #ffffff;
+    background: #931f1f;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
 }
 
-/* btn de gestion de prestamo */
-.btn-moroso{
-  background-color: #d24c4c;
-  color: #ffffff; 
+
+/* Botón moroso */
+
+.btn-moroso {
+    background-color: #d24c4c;
+
+    color: #ffffff;
+
+    border: none;
+
+    border-radius: 6px;
+
+    padding: 6px 12px;
+
+    font-size: 0.82rem;
+
+    transition: all 0.2s ease;
+}
+
+.btn-moroso:hover {
+    background-color: #b13333;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+/* =========================================================
+   CELDAS CLICKABLE
+   ========================================================= */
+
+.celda-clickable {
+    cursor: pointer;
+    color: #0d6efd;
+    font-weight: 500;
+}
+
+.celda-clickable:hover {
+    text-decoration: underline;
+}
+
+#prestamosActivos table th:last-child,
+#prestamosActivos table td:last-child,
+#prestamosMorosos table th:last-child,
+#prestamosMorosos table td:last-child,
+#prestamosHistorial table th:last-child,
+#prestamosHistorial table td:last-child {
+    min-width: 320px;
+}
+
+
+/* =========================================================
+   BOTONES DENTRO DE TABLA
+   ========================================================= */
+
+.table .btn {
+    border-radius: 6px;
+
+    font-size: 0.8rem;
+
+    padding: 6px 10px;
+}
+
+/* =========================================================
+   BOTONES DESHABILITADOS - ACCIONES TABLA
+   ========================================================= */
+
+.btn-deshabilitado,
+.btn-deshabilitado:disabled {
+    background-color: #fff1f1 !important;
+    border-color: #dcdcdc !important;
+    color: #b0b0b0 !important;
+    opacity: 1 !important;
+    cursor: not-allowed;
+}
+
+.btn-deshabilitado i {
+    color: #db9292 !important;
+}
+
+/* =========================================================
+   LISTA DE INSUMOS
+   ========================================================= */
+
+#listaInsumos {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+#listaInsumos table {
+    white-space: nowrap;
+}
+
+#insumosTabla th {
+    font-weight: 700;
+
+    letter-spacing: 0.3px;
+}
+
+#insumosTabla td {
+    vertical-align: middle;
+}
+
+
+/* =========================================================
+   FONDO ROJO SUAVE
+   ========================================================= */
+
+.bg-rojo-suave {
+    background-color: #efecec !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .card {
+        min-height: 120px;
+    }
+
+    .table thead th {
+        padding: 11px 12px;
+    }
+
+    .table tbody td {
+        padding: 11px 12px;
+    }
+
+    .nav-tabs .nav-link {
+        padding: 9px 12px;
+
+        font-size: 0.9rem;
+    }
+}
+
+/* =========================================================
+   NAVBAR BIBLIOTECA
+   ========================================================= */
+
+.navbar-biblioteca {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #e5e5e5;
+
+    min-height: 70px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.logo-navbar {
+    height: 40px;
+    width: auto;
+}
+
+.navbar-brand {
+    color: #333 !important;
+
+    font-weight: 600;
+
+    font-size: 1.05rem;
+}
+
+.navbar-brand:hover {
+    color: #d24c4c !important;
+}
+
+
+/* =========================================================
+   LINKS DEL NAVBAR
+   ========================================================= */
+
+.navbar-biblioteca .nav-link {
+    position: relative;
+
+    color: #6c757d !important;
+
+    font-size: 0.95rem;
+
+    font-weight: 500;
+
+    padding: 23px 16px !important;
+
+    transition: color 0.2s ease;
+}
+
+
+/* Iconos */
+
+.navbar-biblioteca .nav-link i {
+    margin-right: 5px;
+
+    font-size: 0.9rem;
+}
+
+
+/* Hover */
+
+.navbar-biblioteca .nav-link:hover {
+    color: #d24c4c !important;
+}
+
+
+/* =========================================================
+   PESTAÑA ACTIVA
+   ========================================================= */
+
+.navbar-biblioteca .nav-link.active {
+    color: #d24c4c !important;
+
+    font-weight: 600;
+}
+
+
+/* Línea debajo de la pestaña activa */
+
+.navbar-biblioteca .nav-link.active::after {
+    content: "";
+
+    position: absolute;
+
+    left: 14px;
+    right: 14px;
+
+    bottom: 0;
+
+    height: 3px;
+
+    background-color: #d24c4c;
+
+    border-radius: 3px 3px 0 0;
+}
+
+
+/* =========================================================
+   BOTÓN SALIR
+   ========================================================= */
+
+.navbar-biblioteca .nav-link-salir {
+    color: #b02a37 !important;
+}
+
+.navbar-biblioteca .nav-link-salir:hover {
+    color: #8c1f2a !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .navbar-biblioteca .nav-link {
+        padding: 10px 15px !important;
+    }
+
+    .navbar-biblioteca .nav-link.active::after {
+        left: 10px;
+        right: auto;
+
+        width: 35px;
+
+        bottom: 4px;
+    }
+
+    .navbar-biblioteca .nav-item {
+        margin-bottom: 2px;
+    }
 }

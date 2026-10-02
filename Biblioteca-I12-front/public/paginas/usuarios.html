@@ -45,125 +45,76 @@
        NAVBAR
   ====================================================== -->
 
-  <nav
-    class="navbar navbar-expand-lg navbar-light bg-light border-bottom"
-  >
+  <nav class="navbar navbar-expand-lg navbar-light navbar-biblioteca">
+  <div class="container-fluid px-4">
 
-    <div class="container-fluid">
-
-
-      <a
-        class="navbar-brand d-flex align-items-center"
-        href="#"
+    <!-- Logo y nombre -->
+    <a class="navbar-brand d-flex align-items-center" href="home.html">
+      <img 
+        src="../multimedia/logo.png" 
+        alt="Logo Biblioteca" 
+        class="logo-navbar me-2"
       >
+      <span>Biblioteca ISFT Nº12</span>
+    </a>
 
-        <img
-          src="../multimedia/logo.png"
-          alt="Logo"
-          class="d-inline-block align-text-top me-2"
-          style="height: 40px"
-        >
+    <!-- Botón responsive -->
+    <button 
+      class="navbar-toggler" 
+      type="button" 
+      data-bs-toggle="collapse" 
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav" 
+      aria-expanded="false" 
+      aria-label="Abrir menú"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-        Gestión de Usuarios - Biblioteca ISFT Nº12
+    <!-- Menú -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
 
-      </a>
+        <li class="nav-item">
+          <a class="nav-link" href="home.html" id="linkInicio">
+            <i class="bi bi-house-door"></i>
+            Inicio
+          </a>
+        </li>
 
+        <li class="nav-item">
+          <a class="nav-link" href="prestamos.html" id="linkPrestamos">
+            <i class="bi bi-arrow-left-right"></i>
+            Préstamos
+          </a>
+        </li>
 
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Abrir menú"
-      >
+        <li class="nav-item">
+          <a class="nav-link" href="insumos.html" id="linkInsumos">
+            <i class="bi bi-box-seam"></i>
+            Insumos
+          </a>
+        </li>
 
-        <span class="navbar-toggler-icon"></span>
+        <li class="nav-item">
+          <a class="nav-link" href="usuarios.html" id="linkUsuarios">
+            <i class="bi bi-people"></i>
+            Usuarios
+          </a>
+        </li>
 
-      </button>
+        <li class="nav-item ms-lg-2">
+          <a class="nav-link nav-link-salir" href="../index.html" id="linkIndex">
+            <i class="bi bi-box-arrow-right"></i>
+            Salir
+          </a>
+        </li>
 
-
-      <div
-        class="collapse navbar-collapse"
-        id="navbarNav"
-      >
-
-        <ul class="navbar-nav ms-auto">
-
-
-          <li class="nav-item">
-
-            <a
-              class="nav-link"
-              href="home.html"
-              id="linkInicio"
-            >
-              Inicio
-            </a>
-
-          </li>
-
-
-          <li class="nav-item">
-
-            <a
-              class="nav-link"
-              href="./insumos.html"
-              id="linkInsumos"
-            >
-              Insumos
-            </a>
-
-          </li>
-
-
-          <li class="nav-item">
-
-            <a
-              class="nav-link"
-              href="./prestamos.html"
-              id="linkPrestamos"
-            >
-              Préstamos
-            </a>
-
-          </li>
-
-
-          <li class="nav-item">
-
-            <a
-              class="nav-link"
-              href="./usuarios.html"
-              id="linkUsuarios"
-            >
-              Usuarios
-            </a>
-
-          </li>
-
-
-          <li class="nav-item">
-
-            <a
-              class="nav-link"
-              href="../index.html"
-              id="linkIndex"
-            >
-              Salir
-            </a>
-
-          </li>
-
-
-        </ul>
-
-      </div>
-
+      </ul>
     </div>
 
-  </nav>
+  </div>
+</nav>
 
 
 
@@ -779,6 +730,8 @@
     type="module"
     src="../scripts/usuarios.js"
   ></script>
+  <script src="../scripts/funciones.js" type="module"></script>
+
 
 
 </body>

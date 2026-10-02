@@ -11,39 +11,64 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-    <div class="container-fluid">
-      <a class="navbar-brand d-flex align-items-center" href="#">
-        <img src="../multimedia/logo.png" alt="Logo" class="d-inline-block align-text-top me-2"
-          style="height: 40px" />
-        Gestión de Insumos - Biblioteca ISFT Nº12
+  <nav class="navbar navbar-expand-lg navbar-light navbar-biblioteca">
+    <div class="container-fluid px-4">
+
+      <!-- Logo y nombre -->
+      <a class="navbar-brand d-flex align-items-center" href="home.html">
+        <img src="../multimedia/logo.png" alt="Logo Biblioteca" class="logo-navbar me-2">
+        <span>Biblioteca ISFT Nº12</span>
       </a>
+
+      <!-- Botón responsive -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Abrir menú">
         <span class="navbar-toggler-icon"></span>
       </button>
 
+      <!-- Menú -->
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+
           <li class="nav-item">
-            <a class="nav-link" href="home.html" id="linkInicio">Inicio</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="./insumos.html" id="linkInsumos">Insumos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="./prestamos.html" id="linkPrestamos">Préstamos</a>
+            <a class="nav-link" href="home.html" id="linkInicio">
+              <i class="bi bi-house-door"></i>
+              Inicio
+            </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="./usuarios.html" id="linkUsuarios">Usuarios</a>
+            <a class="nav-link" href="prestamos.html" id="linkPrestamos">
+              <i class="bi bi-arrow-left-right"></i>
+              Préstamos
+            </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="../index.html" id="linkIndex">Salir</a>
+            <a class="nav-link" href="insumos.html" id="linkInsumos">
+              <i class="bi bi-box-seam"></i>
+              Insumos
+            </a>
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="usuarios.html" id="linkUsuarios">
+              <i class="bi bi-people"></i>
+              Usuarios
+            </a>
+          </li>
+
+          <li class="nav-item ms-lg-2">
+            <a class="nav-link nav-link-salir" href="../index.html" id="linkIndex">
+              <i class="bi bi-box-arrow-right"></i>
+              Salir
+            </a>
+          </li>
+
+
         </ul>
       </div>
+
     </div>
   </nav>
 
@@ -69,7 +94,7 @@
           <h2 class="card-text fw-bold" id="insumosReparacion">0</h2>
         </div>
       </div>
-      
+
     </div>
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h3>Listado de insumos</h3>
@@ -81,6 +106,10 @@
     <div class="row mb-3">
       <div class="col-md-4">
         <input type="text" class="form-control" id="inputBuscar" name="buscar" placeholder="Buscar por nombre..." />
+      </div>
+
+      <div class="col-md-3 d-flex align-items-center">
+        <span class="badge bg-danger" id="badgeSeleccionados">0 insumos seleccionados</span>
       </div>
 
       <div class="col-md-2">
@@ -106,36 +135,156 @@
 
           <div class="modal-body">
             <form id="formPrestamo">
+
+              <!-- Nombre -->
               <div class="mb-3">
-                <label for="inputDestinatario" class="form-label">Destinatario</label>
-                <input type="text" class="form-control" id="inputDestinatario" maxlength="20" required />
+                <label for="inputDestinatario" class="form-label">
+                  Nombre y apellido
+                </label>
+                <input type="text" class="form-control" id="inputDestinatario" maxlength="50" required />
               </div>
 
+              <!-- Tipo -->
               <div class="mb-3">
-                <label for="inputFecha" class="form-label">Fecha del préstamo</label>
-                <input type="date" class="form-control" id="inputFecha" required />              
+                <label for="selectTipoDestinatario" class="form-label">
+                  Tipo
+                </label>
+
+                <select class="form-select" id="selectTipoDestinatario" required>
+                  <option value="">Seleccionar...</option>
+                  <option value="estudiante">Estudiante</option>
+                  <option value="profesor">Profesor</option>
+                </select>
               </div>
-              
-              <div>   <div class="col-12">
-             <label class="form-label fw-bold">Observación</label>
-             <textarea class="form-control mb-3" id="Observacion_pres" maxlength="50" ></textarea>
-               </div>
 
+              <!-- Datos del estudiante -->
+              <div id="datosEstudiante" style="display: none;">
 
+                <!-- Carrera -->
+                <div class="mb-3">
+                  <label for="inputCarrera" class="form-label">
+                    Carrera
+                  </label>
+
+                  <select class="form-select" id="inputCarrera">
+                    <option value="">Seleccionar carrera...</option>
+
+                    <option value="Tecnicatura Superior en Internet de las Cosas y Sistemas Embebidos">
+                      Tecnicatura Superior en Internet de las Cosas y Sistemas Embebidos
+                      (Resolución 3780/22)
+                    </option>
+
+                    <option value="Tecnicatura Superior en Ciencia de Datos e Inteligencia Artificial">
+                      Tecnicatura Superior en Ciencia de Datos e Inteligencia Artificial
+                      (Resolución 6189-25)
+                    </option>
+
+                    <option value="Tecnicatura Superior en Análisis de Sistemas">
+                      Tecnicatura Superior en Análisis de Sistemas
+                      (Resolución 6790/19)
+                    </option>
+
+                    <option value="Tecnicatura Superior en Desarrollo de Software">
+                      Tecnicatura Superior en Desarrollo de Software
+                      (Resolución 5847/19)
+                    </option>
+
+                    <option value="Tecnicatura Superior en Administración Contable">
+                      Tecnicatura Superior en Administración Contable
+                      (Resolución 6338/25)
+                    </option>
+
+                    <option value="Tecnicatura Superior en Administración Financiera">
+                      Tecnicatura Superior en Administración Financiera
+                      (Resolución 456/23)
+                    </option>
+
+                    <option value="Tecnicatura Superior en Higiene, Seguridad y Ambiente Laboral">
+                      Tecnicatura Superior en Higiene, Seguridad y Ambiente Laboral
+                      (Resolución 6183/25)
+                    </option>
+
+                    <option value="Tecnicatura Superior en Ceremonial y Protocolo">
+                      Tecnicatura Superior en Ceremonial y Protocolo
+                      (Resolución 1623-04)
+                    </option>
+
+                    <option
+                      value="Certificación Superior en Salud y Seguridad Ocupacional en el Trabajo en los Establecimientos de Salud">
+                      Certificación Superior en Salud y Seguridad Ocupacional en el Trabajo en los Establecimientos de
+                      Salud
+                    </option>
+
+                  </select>
+                </div>
+
+                <!-- Año -->
+                <div class="mb-3">
+                  <label for="inputAnio" class="form-label">
+                    Año
+                  </label>
+
+                  <select class="form-select" id="inputAnio">
+                    <option value="">Seleccionar año...</option>
+                    <option value="1">1° año</option>
+                    <option value="2">2° año</option>
+                    <option value="3">3° año</option>
+                  </select>
+                </div>
+
+                <!-- Curso -->
+                <div class="mb-3">
+                  <label for="inputCurso" class="form-label">
+                    Curso
+                  </label>
+
+                  <input type="text" class="form-control" id="inputCurso" maxlength="20" placeholder="Ej.: A" />
+                </div>
+
+                <!-- Profesor a cargo -->
+                <div class="mb-3">
+                  <label for="inputACargo" class="form-label">
+                    Profesor a cargo
+                  </label>
+
+                  <input type="text" class="form-control" id="inputACargo" maxlength="50" />
+                </div>
+
+              </div>
+
+              <!-- Observación -->
+              <div class="mb-3">
+                <label for="Observacion_pres" class="form-label">
+                  Observación
+                </label>
+
+                <input type="text" class="form-control" id="Observacion_pres" maxlength="70" />
+              </div>
+
+              <!-- Fecha -->
+              <div class="mb-3">
+                <label for="inputFecha" class="form-label">
+                  Fecha del préstamo
+                </label>
+
+                <input type="date" class="form-control" id="inputFecha" required />
+              </div>
 
               <button type="submit" class="btn btn-danger w-100">
                 Guardar préstamo
               </button>
+
             </form>
           </div>
         </div>
       </div>
     </div>
 
-  <script src="../scripts/front.js" type="module"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
+    <script src="../scripts/front.js" type="module"></script>
+    <script src="../scripts/funciones.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 
 </html>

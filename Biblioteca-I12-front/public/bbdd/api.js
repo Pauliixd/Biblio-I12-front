@@ -2,7 +2,7 @@
 // Reemplazo de bd.js: habla con el backend real (FastAPI) en vez de localStorage.
 // Va en public/bbdd/api.js, al lado de bd.js.
 
-const BASE_URL = "http://localhost:8000"; // cambiar si el back corre en otro puerto/host
+const BASE_URL = "http://127.0.0.1:8000"; // cambiar si el back corre en otro puerto/host
 
 // ---------------------------------------------------------
 // IDs fijos de EstadoInsumo 
@@ -177,8 +177,18 @@ function adaptarInsumo(insumo) {
   return {
     id: insumo.id,
     codigo: insumo.codigo,
+    numero_inventario: insumo.numero_inventario,
+    numeracion: insumo.numeracion,
+
     nombre: insumo.nombre,
-    observacion: insumo.ubicacion, // el front usa "observacion", el back usa "ubicacion"
+
+    // Esto es lo que usa la tabla
+    nombre_completo: `${insumo.nombre} ${insumo.numeracion || ""}`.trim(),
+
+    // El backend devuelve "ubicacion",
+    // pero el frontend seguirá usando "observacion"
+    observacion: insumo.ubicacion || "",
+
     estado: ESTADOS_INSUMO_POR_ID[insumo.id_estado] || "Desconocido",
   };
 }
@@ -191,37 +201,23 @@ export async function obtenerInsumos() {
   return insumos.map(adaptarInsumo);
 }
 
-// El campo "codigo" del insumo es único y de máximo 10 caracteres, pero el
-// form de alta no le pide un código al usuario (antes bd.js lo autogeneraba).
-// Se genera acá mismo, tipo "INS-0001", buscando el correlativo más alto.
-async function generarCodigoInsumo() {
-  const insumos = await pedido(`${BASE_URL}/insumos/`, {
-    method: "GET",
-    headers: headersAuth(),
-  });
-
-  let maxNumero = 0;
-  for (const ins of insumos) {
-    const match = /^INS-(\d+)$/.exec(ins.codigo);
-    if (match) {
-      const numero = parseInt(match[1], 10);
-      if (numero > maxNumero) maxNumero = numero;
-    }
-  }
-
-  return `INS-${String(maxNumero + 1).padStart(4, "0")}`; // ej: INS-0001 (8 caracteres)
-}
-
-// Crea un insumo nuevo. Se da de alta siempre como "Disponible",
-// igual que hacía insumos.js con localStorage.
-// datos = { nombre, observacion }
-export async function guardarInsumo({ nombre, observacion }) {
-  const codigo = await generarCodigoInsumo();
+// El campo "codigo" (tipo "INS-0001") ya NO se genera acá: el backend lo
+// arma automáticamente para cada unidad creada, con la misma lógica de
+// siempre (correlativo INS-XXXX), solo que ahora resuelta del lado del
+// servidor porque se pueden crear varias unidades en un mismo alta.
+export async function guardarInsumo({
+  numero_inventario,
+  cantidad,
+  numeracion,
+  nombre,
+  observacion
+}) {
   const body = {
-    codigo,
+    numero_inventario,
+    cantidad,
+    numeracion,
     nombre,
-    ubicacion: observacion || "",
-    id_estado: ESTADOS_INSUMO["Disponible"],
+    observacion: observacion || "",
   };
 
   const creado = await pedido(`${BASE_URL}/insumos/`, {
@@ -229,22 +225,8 @@ export async function guardarInsumo({ nombre, observacion }) {
     headers: headersAuth(),
     body: JSON.stringify(body),
   });
+
   return creado;
-}
-
-// Actualiza un insumo existente.
-// datos = { nombre, estado, observacion } (estado como texto: "Disponible" / "No Disponible")
-export async function actualizarInsumo(id, { nombre, estado, observacion }) {
-  const body = {};
-  if (nombre !== undefined) body.nombre = nombre;
-  if (observacion !== undefined) body.ubicacion = observacion;
-  if (estado !== undefined) body.id_estado = ESTADOS_INSUMO[estado];
-
-  return pedido(`${BASE_URL}/insumos/${id}`, {
-    method: "PUT",
-    headers: headersAuth(),
-    body: JSON.stringify(body),
-  });
 }
 
 export async function eliminarInsumo(id) {
@@ -257,11 +239,34 @@ export async function eliminarInsumo(id) {
 // ---------------------------------------------------------
 // PRÉSTAMOS
 // ---------------------------------------------------------
-export async function guardarPrestamo({ id_insumo, id_destinatario, fecha_entrega, obs }) {
+export async function modificarPrestamo(id, datos) {
+
+  return pedido(`${BASE_URL}/prestamos/${id}`, {
+    method: "PUT",
+    headers: headersAuth(),
+    body: JSON.stringify(datos)
+  });
+
+}
+
+export async function guardarPrestamo({
+  id_insumo,
+  id_destinatario,
+  carrera,
+  anio,
+  curso,
+  a_cargo,
+  fecha_entrega,
+  obs
+}) {
   const body = {
     id_insumo: Number(id_insumo),
     id_destinatario: String(id_destinatario),
-    fecha_entrega: fecha_entrega, // "YYYY-MM-DD"
+    carrera: carrera || null,
+    anio: anio ? Number(anio) : null,
+    curso: curso || null,
+    a_cargo: a_cargo || null,
+    fecha_entrega: fecha_entrega,
     obs: obs || ""
   };
 
@@ -325,4 +330,25 @@ export async function actualizarInsumosPrestados(insumosPrestados) {
   }
 }
 
+export async function actualizarInsumo(id, datos) {
+  const body = {};
+
+  if (datos.nombre !== undefined) {
+    body.nombre = datos.nombre;
+  }
+
+  if (datos.estado !== undefined) {
+    body.id_estado = ESTADOS_INSUMO[datos.estado];
+  }
+
+  if (datos.observacion !== undefined) {
+    body.ubicacion = datos.observacion;
+  }
+
+  return pedido(`${BASE_URL}/insumos/${id}`, {
+    method: "PUT",
+    headers: headersAuth(),
+    body: JSON.stringify(body),
+  });
+}
 

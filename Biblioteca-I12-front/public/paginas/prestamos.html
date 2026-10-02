@@ -1,86 +1,92 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gestión de Préstamos</title>
 
-    <!-- Bootstrap -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-    />
-    <link rel="stylesheet" href="../css/styles.css" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Préstamos</title>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-      defer
-    ></script>
-  </head>
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="../css/styles.css" />
 
-  <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-      <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center" href="#">
-          <img
-            src="../multimedia/logo.png"
-            alt="Logo"
-            class="d-inline-block align-text-top me-2"
-            style="height: 40px"
-          />
-          Gestión de Insumos - Biblioteca ISFT Nº12
-        </a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" defer></script>
+</head>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-        <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light navbar-biblioteca">
+    <div class="container-fluid px-4">
+
+      <!-- Logo y nombre -->
+      <a class="navbar-brand d-flex align-items-center" href="home.html">
+        <img src="../multimedia/logo.png" alt="Logo Biblioteca" class="logo-navbar me-2">
+        <span>Biblioteca ISFT Nº12</span>
+      </a>
+
+      <!-- Botón responsive -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Abrir menú">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Menú -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+
           <li class="nav-item">
-            <a class="nav-link" href="home.html" id="linkInicio">Inicio</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="./insumos.html" id="linkInsumos">Insumos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="./prestamos.html" id="linkPrestamos">Préstamos</a>
+            <a class="nav-link" href="home.html" id="linkInicio">
+              <i class="bi bi-house-door"></i>
+              Inicio
+            </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="./usuarios.html" id="linkUsuarios">Usuarios</a>
+            <a class="nav-link" href="prestamos.html" id="linkPrestamos">
+              <i class="bi bi-arrow-left-right"></i>
+              Préstamos
+            </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="../index.html" id="linkIndex">Salir</a>
-          
-            </li>
-          </ul>
-        </div>
+            <a class="nav-link" href="insumos.html" id="linkInsumos">
+              <i class="bi bi-box-seam"></i>
+              Insumos
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="usuarios.html" id="linkUsuarios">
+              <i class="bi bi-people"></i>
+              Usuarios
+            </a>
+          </li>
+
+          <li class="nav-item ms-lg-2">
+            <a class="nav-link nav-link-salir" href="../index.html" id="linkIndex">
+              <i class="bi bi-box-arrow-right"></i>
+              Salir
+            </a>
+          </li>
+
+        </ul>
       </div>
-    </nav>
 
-    <!-- Contenido principal -->
-    <div class="container mt-5">
-      <div class="text-center mb-4">
-        <h2 class="fw-bold">
-          <img src="../multimedia/logo i12 fondo blanco.png" alt="Logo" class="d-inline-block align-text-top me-2"
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <div class="container mt-5">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold">
+        <img src="../multimedia/logo i12 fondo blanco.png" alt="Logo" class="d-inline-block align-text-top me-2"
           style="height: 40px" />
-          Gestión de Préstamos
-        </h2>
-      </div>
+        Gestión de Préstamos
+      </h2>
+    </div>
 
-      <div class="row mb-3">
+    <div class="row mb-3">
       <div class="col-md-4 mb-3">
         <input type="text" class="form-control" id="inputBuscar" name="buscar" placeholder="Buscar por nombre..." />
       </div>
@@ -88,38 +94,20 @@
       <!-- Tabs -->
       <ul class="nav nav-tabs mb-3" id="prestamosTabs" role="tablist">
         <li class="nav-item" role="presentation">
-          <button
-            class="nav-link active"
-            id="activos-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#activos"
-            type="button"
-            role="tab"
-          >
+          <button class="nav-link active" id="activos-tab" data-bs-toggle="tab" data-bs-target="#activos" type="button"
+            role="tab">
             Activos
           </button>
         </li>
         <li class="nav-item" role="presentation">
-          <button
-            class="nav-link"
-            id="morosos-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#morosos"
-            type="button"
-            role="tab"
-          >
+          <button class="nav-link" id="morosos-tab" data-bs-toggle="tab" data-bs-target="#morosos" type="button"
+            role="tab">
             Morosos
           </button>
         </li>
         <li class="nav-item" role="presentation">
-          <button
-            class="nav-link"
-            id="historial-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#historial"
-            type="button"
-            role="tab"
-          >
+          <button class="nav-link" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial" type="button"
+            role="tab">
             Historial (Devueltos)
           </button>
         </li>
@@ -127,37 +115,161 @@
 
       <!-- Contenido de Tabs -->
       <div class="tab-content" id="prestamosTabsContent">
-        <div
-          class="tab-pane fade show active"
-          id="activos"
-          role="tabpanel"
-          aria-labelledby="activos-tab"
-        >
+        <div class="tab-pane fade show active" id="activos" role="tabpanel" aria-labelledby="activos-tab">
           <div class="table-responsive mt-3" id="prestamosActivos"></div>
         </div>
 
-        <div
-          class="tab-pane fade"
-          id="morosos"
-          role="tabpanel"
-          aria-labelledby="morosos-tab"
-        >
+        <div class="tab-pane fade" id="morosos" role="tabpanel" aria-labelledby="morosos-tab">
           <div class="table-responsive mt-3" id="prestamosMorosos"></div>
         </div>
 
-        <div
-          class="tab-pane fade"
-          id="historial"
-          role="tabpanel"
-          aria-labelledby="historial-tab"
-        >
+        <div class="tab-pane fade" id="historial" role="tabpanel" aria-labelledby="historial-tab">
           <div class="table-responsive mt-3" id="prestamosHistorial"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Modal información del préstamo -->
+    <div class="modal fade" id="modalDetallePrestamo" tabindex="-1" aria-labelledby="modalDetallePrestamoLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalDetallePrestamoLabel">
+              Información del préstamo
+            </h5>
+
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+
+          <div class="modal-body">
+
+            <p>
+              <strong>Insumo:</strong>
+              <span id="detalleInsumo"></span>
+            </p>
+
+            <p>
+              <strong>Destinatario:</strong>
+              <span id="detalleDestinatario"></span>
+            </p>
+
+            <p>
+              <strong>Tipo:</strong>
+              <span id="detalleTipo"></span>
+            </p>
+
+            <p>
+              <strong>Carrera:</strong>
+              <span id="detalleCarrera"></span>
+            </p>
+
+            <p>
+              <strong>Año:</strong>
+              <span id="detalleAnio"></span>
+            </p>
+
+            <p>
+              <strong>Curso:</strong>
+              <span id="detalleCurso"></span>
+            </p>
+
+            <p>
+              <strong>Profesor a cargo:</strong>
+              <span id="detalleACargo"></span>
+            </p>
+
+            <p>
+              <strong>Fecha:</strong>
+              <span id="detalleFecha"></span>
+            </p>
+
+            <p>
+              <strong>Estado:</strong>
+              <span id="detalleEstado"></span>
+            </p>
+
+            <p class="mb-0">
+              <strong>Observación:</strong>
+              <span id="detalleObservacion"></span>
+            </p>
+
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cerrar
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Modal comentario -->
+    <div class="modal fade" id="modalComentario" tabindex="-1" aria-labelledby="modalComentarioLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalComentarioLabel">
+              Comentario del préstamo
+            </h5>
+
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+
+          <div class="modal-body">
+
+            <p>
+              <strong>Insumo:</strong>
+              <span id="comentarioInsumo"></span>
+            </p>
+
+            <p>
+              <strong>Destinatario:</strong>
+              <span id="comentarioDestinatario"></span>
+            </p>
+
+            <div class="mb-3">
+              <label for="inputComentario" class="form-label">
+                Observación
+              </label>
+
+              <textarea class="form-control" id="inputComentario" rows="4" maxlength="70"
+                placeholder="Escriba una observación..."></textarea>
+
+              <div class="form-text">
+                Máximo 70 caracteres.
+              </div>
+            </div>
+
+          </div>
+
+          <div class="modal-footer">
+
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancelar
+            </button>
+
+            <button type="button" class="btn btn-primary" id="btnGuardarComentario">
+              Guardar comentario
+            </button>
+
+          </div>
+
         </div>
       </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../scripts/prestamos.js" type="module"></script>
+    <script src="../scripts/funciones.js" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+</body>
+
 </html>
