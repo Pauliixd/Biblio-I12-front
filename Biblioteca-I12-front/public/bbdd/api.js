@@ -4,6 +4,8 @@
 
 const BASE_URL = "http://127.0.0.1:8000"; // cambiar si el back corre en otro puerto/host
 
+//const BASE_URL = "https://s8drkr2f-8000.brs.devtunnels.ms"; // túnel de ngrok para pruebas remotas
+
 // ---------------------------------------------------------
 // IDs fijos de EstadoInsumo 
 
@@ -179,17 +181,17 @@ function adaptarInsumo(insumo) {
     codigo: insumo.codigo,
     numero_inventario: insumo.numero_inventario,
     numeracion: insumo.numeracion,
-
     nombre: insumo.nombre,
 
-    // Esto es lo que usa la tabla
-    nombre_completo: `${insumo.nombre} ${insumo.numeracion || ""}`.trim(),
+    activo: insumo.activo === true,
 
-    // El backend devuelve "ubicacion",
-    // pero el frontend seguirá usando "observacion"
+    nombre_completo:
+      `${insumo.nombre} ${insumo.numeracion || ""}`.trim(),
+
     observacion: insumo.ubicacion || "",
 
-    estado: ESTADOS_INSUMO_POR_ID[insumo.id_estado] || "Desconocido",
+    estado: ESTADOS_INSUMO_POR_ID[insumo.id_estado]
+      || "Desconocido",
   };
 }
 
@@ -252,6 +254,7 @@ export async function modificarPrestamo(id, datos) {
 export async function guardarPrestamo({
   id_insumo,
   id_destinatario,
+  tipo_destinatario,
   carrera,
   anio,
   curso,
@@ -262,6 +265,7 @@ export async function guardarPrestamo({
   const body = {
     id_insumo: Number(id_insumo),
     id_destinatario: String(id_destinatario),
+    tipo_destinatario: tipo_destinatario,
     carrera: carrera || null,
     anio: anio ? Number(anio) : null,
     curso: curso || null,

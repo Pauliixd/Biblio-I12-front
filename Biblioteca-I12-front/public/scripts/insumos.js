@@ -34,43 +34,89 @@ const columnasInsumos = [
 
 // FUNCIONES
 
+
 function crearBotoneraAcciones(insumo) {
-  const div = document.createElement('div');
-  div.className = 'btn-group btn-group-sm';
+
+  const div = document.createElement("div");
+  div.className = "btn-group btn-group-sm";
 
   const estaPrestado = insumo.estado === "Prestado";
+  const estaInhabilitado = insumo.activo === false;
 
-const btnEditar = document.createElement('button');
-btnEditar.className = `btn btn-outline-primary${estaPrestado ? ' btn-deshabilitado' : ''}`;
-btnEditar.innerHTML = '<i class="bi bi-pencil-square"></i>';
-btnEditar.title = estaPrestado ? 'No se puede editar un insumo prestado' : 'Editar';
-btnEditar.disabled = estaPrestado;
-btnEditar.addEventListener('click', () => abrirModalEditarInsumo(insumo));
+  // INSUMO INHABILITADO: SIN ACCIONES
+  if (estaInhabilitado) {
+    const texto = document.createElement("span");
 
-const btnEliminar = document.createElement('button');
-btnEliminar.className = `btn btn-outline-danger${estaPrestado ? ' btn-deshabilitado' : ''}`;
-btnEliminar.innerHTML = '<i class="bi bi-trash"></i>';
-btnEliminar.title = estaPrestado ? 'No se puede eliminar un insumo prestado' : 'Eliminar';
-btnEliminar.disabled = estaPrestado;
+    texto.className = "text-muted small";
+    texto.innerHTML =
+      '<i class="bi bi-lock-fill me-1"></i>Inhabilitado';
+
+    div.appendChild(texto);
+    return div;
+  }
+
+  // BOTÓN EDITAR
+  const btnEditar = document.createElement("button");
+
+  btnEditar.className = "btn btn-outline-primary";
+  btnEditar.innerHTML =
+    '<i class="bi bi-pencil-square"></i>';
+
+  btnEditar.title = estaPrestado
+    ? "No se puede editar un insumo prestado"
+    : "Editar";
+
+  btnEditar.disabled = estaPrestado;
+
+  btnEditar.addEventListener("click", () => {
+    abrirModalEditarInsumo(insumo);
+  });
+
+  // BOTÓN ELIMINAR (BAJA LÓGICA)
+  const btnEliminar = document.createElement("button");
+
+  btnEliminar.className = "btn btn-outline-danger";
+  btnEliminar.innerHTML =
+    '<i class="bi bi-trash"></i>';
+
+  btnEliminar.title = estaPrestado
+    ? "No se puede inhabilitar un insumo prestado"
+    : "Inhabilitar insumo";
+
+  btnEliminar.disabled = estaPrestado;
 
   btnEliminar.addEventListener("click", async () => {
-    const ok = await confirmarAccion(
-      "¿Seguro que querés eliminar?",
-      `Insumo: ${String(insumo.nombre).toUpperCase()} (código: ${insumo.codigo})`
+
+    const confirmado = await confirmarAccion(
+      "¿Inhabilitar este insumo?",
+      `El insumo "${insumo.nombre_completo}" dejará de estar disponible. Solo soporte técnico podrá volver a habilitarlo.`
     );
-    if (ok) {
-      try {
-        await eliminarInsumo(insumo.id);
-        alertaExito("Se eliminó correctamente");
-        await renderizarTablaInsumos();
-      } catch (err) {
-        alertaError(err.message || "No se pudo eliminar el insumo");
-      }
+
+    if (!confirmado) return;
+
+    try {
+
+      await eliminarInsumo(insumo.id);
+
+      await renderizarTablaInsumos();
+
+      alertaExito(
+        "Insumo inhabilitado",
+        "El insumo se inhabilitó correctamente."
+      );
+
+    } catch (error) {
+
+      alertaError(
+        error.message || "No se pudo inhabilitar el insumo."
+      );
+
     }
   });
 
   div.appendChild(btnEditar);
   div.appendChild(btnEliminar);
+
   return div;
 }
 
@@ -86,12 +132,26 @@ async function renderizarTablaInsumos() {
   const textoBusqueda = inputBuscar.value.trim();
   const insumosFiltrados = buscarInsumo(insumos, textoBusqueda);
 
+  insumosFiltrados.sort((a, b) => {
+    return Number(b.activo) - Number(a.activo);
+  });
+
   if (insumosFiltrados.length > 0) {
     const tablaCompleta = crearTablaGeneral(insumosFiltrados, columnasInsumos, {
       acciones: crearBotoneraAcciones
     });
 
     const newTbody = tablaCompleta.querySelector("tbody");
+    const filas = newTbody.querySelectorAll("tr");
+
+    filas.forEach((fila, indice) => {
+      const insumo = insumosFiltrados[indice];
+
+      if (insumo && insumo.activo === false) {
+        fila.classList.add("insumo-inhabilitado");
+      }
+    });
+    
     newTbody.id = "insumosTablaBody";
 
     insumosTablaBody.replaceWith(newTbody);

@@ -124,7 +124,7 @@
     <div class="table-responsive" id="listaInsumos"></div>
 
     <div class="modal fade" id="modalPrestamo" tabindex="-1" aria-labelledby="modalPrestamoLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="modalPrestamoLabel">
@@ -134,36 +134,51 @@
           </div>
 
           <div class="modal-body">
+
             <form id="formPrestamo">
 
-              <!-- Nombre -->
+              <!-- DATOS DEL DESTINATARIO -->
               <div class="mb-3">
-                <label for="inputDestinatario" class="form-label">
-                  Nombre y apellido
-                </label>
-                <input type="text" class="form-control" id="inputDestinatario" maxlength="50" required />
+
+                <div class="mb-3">
+                  <label for="inputDestinatario" class="form-label fw-medium">
+                    Nombre y apellido <span class="text-danger">*</span>
+                  </label>
+                  <input type="text" class="form-control" id="inputDestinatario" maxlength="50"
+                    placeholder="nombre y apellido" autocomplete="name" required />
+                </div>
+
+                <fieldset class="mb-2">
+                  <legend class="form-label fw-medium fs-6">
+                    Tipo de destinatario <span class="text-danger">*</span>
+                  </legend>
+
+                  <div class="d-flex flex-wrap gap-3">
+                    <label class="form-check border rounded-3 px-3 py-2 d-flex align-items-center gap-2 m-0">
+                      <input class="form-check-input m-0" type="radio" name="tipoDestinatario" id="tipoEstudiante"
+                        value="estudiante" required />
+                      <span class="form-check-label">Estudiante</span>
+                    </label>
+
+                    <label class="form-check border rounded-3 px-3 py-2 d-flex align-items-center gap-2 m-0">
+                      <input class="form-check-input m-0" type="radio" name="tipoDestinatario" id="tipoProfesor"
+                        value="profesor" required />
+                      <span class="form-check-label">Profesor</span>
+                    </label>
+                  </div>
+                </fieldset>
               </div>
 
-              <!-- Tipo -->
-              <div class="mb-3">
-                <label for="selectTipoDestinatario" class="form-label">
-                  Tipo
-                </label>
-
-                <select class="form-select" id="selectTipoDestinatario" required>
-                  <option value="">Seleccionar...</option>
-                  <option value="estudiante">Estudiante</option>
-                  <option value="profesor">Profesor</option>
-                </select>
-              </div>
-
-              <!-- Datos del estudiante -->
+              <!-- INFORMACIÓN ACADÉMICA -->
               <div id="datosEstudiante" style="display: none;">
 
-                <!-- Carrera -->
+                <h6 class="fw-semibold text-secondary border-bottom pb-2 mb-3">
+                  <i class="bi bi-mortarboard me-2"></i>Información académica
+                </h6>
+
                 <div class="mb-3">
-                  <label for="inputCarrera" class="form-label">
-                    Carrera
+                  <label for="inputCarrera" class="form-label fw-medium">
+                    Carrera <span class="text-danger">*</span>
                   </label>
 
                   <select class="form-select" id="inputCarrera">
@@ -171,42 +186,34 @@
 
                     <option value="Tecnicatura Superior en Internet de las Cosas y Sistemas Embebidos">
                       Tecnicatura Superior en Internet de las Cosas y Sistemas Embebidos
-                      (Resolución 3780/22)
                     </option>
 
                     <option value="Tecnicatura Superior en Ciencia de Datos e Inteligencia Artificial">
                       Tecnicatura Superior en Ciencia de Datos e Inteligencia Artificial
-                      (Resolución 6189-25)
                     </option>
 
                     <option value="Tecnicatura Superior en Análisis de Sistemas">
                       Tecnicatura Superior en Análisis de Sistemas
-                      (Resolución 6790/19)
                     </option>
 
                     <option value="Tecnicatura Superior en Desarrollo de Software">
                       Tecnicatura Superior en Desarrollo de Software
-                      (Resolución 5847/19)
                     </option>
 
                     <option value="Tecnicatura Superior en Administración Contable">
                       Tecnicatura Superior en Administración Contable
-                      (Resolución 6338/25)
                     </option>
 
                     <option value="Tecnicatura Superior en Administración Financiera">
                       Tecnicatura Superior en Administración Financiera
-                      (Resolución 456/23)
                     </option>
 
                     <option value="Tecnicatura Superior en Higiene, Seguridad y Ambiente Laboral">
                       Tecnicatura Superior en Higiene, Seguridad y Ambiente Laboral
-                      (Resolución 6183/25)
                     </option>
 
                     <option value="Tecnicatura Superior en Ceremonial y Protocolo">
                       Tecnicatura Superior en Ceremonial y Protocolo
-                      (Resolución 1623-04)
                     </option>
 
                     <option
@@ -214,67 +221,75 @@
                       Certificación Superior en Salud y Seguridad Ocupacional en el Trabajo en los Establecimientos de
                       Salud
                     </option>
-
                   </select>
                 </div>
 
-                <!-- Año -->
-                <div class="mb-3">
-                  <label for="inputAnio" class="form-label">
-                    Año
-                  </label>
+                <div class="row g-3 mb-3">
+                  <div class="col-md-6">
+                    <label for="inputAnio" class="form-label fw-medium">
+                      Año <span class="text-danger">*</span>
+                    </label>
+                    <select class="form-select" id="inputAnio">
+                      <option value="">Seleccionar año...</option>
+                      <option value="1">1° año</option>
+                      <option value="2">2° año</option>
+                      <option value="3">3° año</option>
+                    </select>
+                  </div>
 
-                  <select class="form-select" id="inputAnio">
-                    <option value="">Seleccionar año...</option>
-                    <option value="1">1° año</option>
-                    <option value="2">2° año</option>
-                    <option value="3">3° año</option>
-                  </select>
+                  <div class="col-md-6">
+                    <label for="inputCurso" class="form-label fw-medium">
+                      Curso <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="form-control" id="inputCurso" maxlength="20" placeholder="Ej.: 1° 1°" />
+                  </div>
                 </div>
 
-                <!-- Curso -->
-                <div class="mb-3">
-                  <label for="inputCurso" class="form-label">
-                    Curso
+                <div class="mb-3" id="contenedorACargo" style="display: none;">
+                  <label for="inputACargo" class="form-label fw-medium">
+                    Profesor a cargo <span class="text-danger">*</span>
                   </label>
+                  <input type="text" class="form-control" id="inputACargo" maxlength="50"
+                    placeholder="Nombre y apellido del docente" />
+                </div>
+              </div>
 
-                  <input type="text" class="form-control" id="inputCurso" maxlength="20" placeholder="Ej.: A" />
+              <!-- DETALLES DEL PRÉSTAMO -->
+              <h6 class="fw-semibold text-secondary border-bottom pb-2 mb-3">
+                <i class="bi bi-calendar-check me-2"></i>Detalles del préstamo
+              </h6>
+
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  <label for="inputFecha" class="form-label fw-medium">
+                    Fecha del préstamo <span class="text-danger">*</span>
+                  </label>
+                  <input type="date" class="form-control" id="inputFecha" required />
                 </div>
 
-                <!-- Profesor a cargo -->
-                <div class="mb-3">
-                  <label for="inputACargo" class="form-label">
-                    Profesor a cargo
+                <div class="col-md-6">
+                  <label for="Observacion_pres" class="form-label fw-medium">
+                    Observación
+                    <span class="text-muted fw-normal">(opcional)</span>
                   </label>
-
-                  <input type="text" class="form-control" id="inputACargo" maxlength="50" />
+                  <input type="text" class="form-control" id="Observacion_pres" maxlength="70"
+                    placeholder="Agregar observación..." />
                 </div>
-
               </div>
 
-              <!-- Observación -->
-              <div class="mb-3">
-                <label for="Observacion_pres" class="form-label">
-                  Observación
-                </label>
+              <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                  Cancelar
+                </button>
 
-                <input type="text" class="form-control" id="Observacion_pres" maxlength="70" />
+                <button type="submit" class="btn btn-danger px-4">
+                  <i class="bi bi-check-lg me-1"></i>
+                  Guardar préstamo
+                </button>
               </div>
-
-              <!-- Fecha -->
-              <div class="mb-3">
-                <label for="inputFecha" class="form-label">
-                  Fecha del préstamo
-                </label>
-
-                <input type="date" class="form-control" id="inputFecha" required />
-              </div>
-
-              <button type="submit" class="btn btn-danger w-100">
-                Guardar préstamo
-              </button>
 
             </form>
+
           </div>
         </div>
       </div>

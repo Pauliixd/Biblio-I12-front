@@ -91,49 +91,60 @@ function abrirModalDetalle(prestamo) {
     mostrarDato(prestamo.destinatario);
 
 
-  // Determinar si es estudiante o profesor
-  const esEstudiante =
-    prestamo.carrera ||
-    prestamo.anio ||
-    prestamo.curso ||
-    prestamo.a_cargo;
+  // DETERMINAR TIPO DE DESTINATARIO
 
+  let tipoDestinatario = "No especificado";
+
+  if (prestamo.tipo_destinatario === "estudiante") {
+
+    tipoDestinatario = "Estudiante";
+
+  } else if (prestamo.tipo_destinatario === "profesor") {
+
+    tipoDestinatario = "Profesor";
+
+  } else if (prestamo.a_cargo) {
+
+    // Compatibilidad con préstamos anteriores
+    tipoDestinatario = "Estudiante";
+
+  }
 
   document.getElementById("detalleTipo").textContent =
-    esEstudiante ? "Estudiante" : "Profesor";
+    tipoDestinatario;
 
+
+  // DATOS ACADÉMICOS
 
   document.getElementById("detalleCarrera").textContent =
     mostrarDato(prestamo.carrera);
 
-
   document.getElementById("detalleAnio").textContent =
     mostrarDato(prestamo.anio);
 
-
   document.getElementById("detalleCurso").textContent =
     mostrarDato(prestamo.curso);
-
 
   document.getElementById("detalleACargo").textContent =
     mostrarDato(prestamo.a_cargo);
 
 
+  // DATOS DEL PRÉSTAMO
+
   document.getElementById("detalleFecha").textContent =
     mostrarDato(prestamo.fecha);
 
-
   document.getElementById("detalleEstado").textContent =
     mostrarDato(prestamo.estado);
-
 
   document.getElementById("detalleObservacion").textContent =
     mostrarDato(prestamo.observacion);
 
 
+  // MOSTRAR MODAL
+
   modalDetalle.show();
 }
-
 
 // ---------------------------------------------------------
 // MODAL COMENTARIO
@@ -143,14 +154,11 @@ const modalComentario = new bootstrap.Modal(
   document.getElementById("modalComentario")
 );
 
-
 const inputComentario =
   document.getElementById("inputComentario");
 
-
 const btnGuardarComentario =
   document.getElementById("btnGuardarComentario");
-
 
 let prestamoComentarioActual = null;
 

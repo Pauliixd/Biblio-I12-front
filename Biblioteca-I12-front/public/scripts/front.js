@@ -1,315 +1,537 @@
-// front.js
+
+/* =========================================================
+  FRONT.JS - BIBLIOTECA ISFT Nº12
+========================================================= */
 
 // IMPORTS
 
-//import { guardarPrestamo,actualizarInsumosPrestados,obtenerInsumos } from "../bbdd/bd.js";
+import {
+  obtenerInsumos,
+  guardarPrestamo
+} from "../bbdd/api.js";
 
-import { obtenerInsumos, guardarPrestamo } from "../bbdd/api.js";
+import {
+  crearTablaGeneral,
+  buscarInsumo,
+  obtenerFechaActual
+} from "./funciones.js";
+
+import {
+  alertaAdvertencia,
+  alertaError,
+  alertaExito
+} from "./alerts.js";
 
 
-
-import { crearTablaGeneral, buscarInsumo  } from "./funciones.js";
-
-import { alertaAdvertencia, alertaError, alertaExito } from "./alerts.js";
-
+// =========================================================
 // ELEMENTOS HTML
+// =========================================================
+
 const listaInsumos = document.getElementById("listaInsumos");
 const btnPrestamo = document.getElementById("btnNuevoPrestamo");
 const selectEstado = document.getElementById("selectEstado");
-const inputBuscar = document.getElementById("inputBuscar"); 
+const inputBuscar = document.getElementById("inputBuscar");
+
 const formPrestamo = document.getElementById("formPrestamo");
 const inputDestinatario = document.getElementById("inputDestinatario");
 const inputFecha = document.getElementById("inputFecha");
-const inputobservacion = document.getElementById ("Observacion_pres")
-const totalInsumos = document.getElementById("totalInsumos")
-const insumosPrestados = document.getElementById("insumosPrestados")
-const insumosReparacion = document.getElementById("insumosReparacion")
+const inputObservacion = document.getElementById("Observacion_pres");
+
+const totalInsumos = document.getElementById("totalInsumos");
+const insumosPrestados = document.getElementById("insumosPrestados");
+const insumosReparacion = document.getElementById("insumosReparacion");
+
 const badgeSeleccionados = document.getElementById("badgeSeleccionados");
 
 
-const modalPrestamo = new bootstrap.Modal(document.getElementById('modalPrestamo')); // Instancia del modal de Bootstrap
-
-// ELEMENTOS HTML para el tipo de destinatario
-const selectTipoDestinatario = document.getElementById("selectTipoDestinatario");
-const datosEstudiante = document.getElementById("datosEstudiante");
+// =========================================================
+// ELEMENTOS DEL FORMULARIO DE PRÉSTAMO
+// =========================================================
 
 const inputCarrera = document.getElementById("inputCarrera");
 const inputAnio = document.getElementById("inputAnio");
 const inputCurso = document.getElementById("inputCurso");
 const inputACargo = document.getElementById("inputACargo");
 
-// Event listener para mostrar/ocultar campos según el tipo de destinatario
-selectTipoDestinatario.addEventListener("change", () => {
+const contenedorACargo = document.getElementById("contenedorACargo");
+const datosEstudiante = document.getElementById("datosEstudiante");
 
-  if (selectTipoDestinatario.value === "estudiante") {
-    datosEstudiante.style.display = "block";
-  } else {
-    datosEstudiante.style.display = "none";
+const radiosTipoDestinatario = document.querySelectorAll(
+  'input[name="tipoDestinatario"]'
+);
 
-    inputCarrera.value = "";
-    inputAnio.value = "";
-    inputCurso.value = "";
+
+// =========================================================
+// MODAL DE BOOTSTRAP
+// =========================================================
+
+const elementoModal = document.getElementById("modalPrestamo");
+
+const modalPrestamo = bootstrap.Modal.getOrCreateInstance(
+  elementoModal
+);
+
+
+// =========================================================
+// VARIABLES
+// =========================================================
+
+// Guarda los insumos seleccionados.
+// Clave: código del insumo
+// Valor: objeto completo del insumo
+
+let insumosSeleccionados = new Map();
+
+let insumosActuales = await obtenerInsumos();
+
+const columnasInsumos = [
+  {
+    clave: "nombre_completo",
+    texto: "Insumo"
+  }
+];
+
+
+// =========================================================
+// TIPO DE DESTINATARIO
+// =========================================================
+
+function obtenerTipoDestinatario() {
+
+  const seleccionado = document.querySelector(
+    'input[name="tipoDestinatario"]:checked'
+  );
+
+  return seleccionado ? seleccionado.value : "";
+}
+
+
+// =========================================================
+// MOSTRAR / OCULTAR CAMPOS DEL FORMULARIO
+// =========================================================
+
+function actualizarCamposDestinatario() {
+
+  const tipo = obtenerTipoDestinatario();
+
+  const mostrarDatos =
+    tipo === "estudiante" || tipo === "profesor";
+
+  const esEstudiante = tipo === "estudiante";
+
+  // Carrera, año y curso para ambos
+  datosEstudiante.style.display =
+    mostrarDatos ? "block" : "none";
+
+  inputCarrera.required = mostrarDatos;
+  inputAnio.required = mostrarDatos;
+  inputCurso.required = mostrarDatos;
+
+  // Profesor a cargo solamente para estudiantes
+  contenedorACargo.style.display =
+    esEstudiante ? "block" : "none";
+
+  inputACargo.required = esEstudiante;
+
+  if (!esEstudiante) {
     inputACargo.value = "";
   }
+}
+
+
+// Eventos de los radio buttons
+
+radiosTipoDestinatario.forEach((radio) => {
+
+  radio.addEventListener(
+    "change",
+    actualizarCamposDestinatario
+  );
 
 });
 
-// VARIABLES
-// let insumosSeleccionados = [];
-let insumosSeleccionados = new Map(); // codigo -> insumo completo
-let insumosActuales = await obtenerInsumos(); // Inicializar con todos los insumos
+// Estado inicial del formulario
+actualizarCamposDestinatario();
 
-const columnasInsumos = [
-  { clave: "nombre_completo", texto: "Insumo" },
-];
 
-// FUNCIONES
+// =========================================================
+// ESTADO SELECCIONADO EN EL FILTRO
+// =========================================================
 
 function estadoActual() {
-  if (selectEstado.value === "dispo") {
-    return true;
-  } else {
-    return false;
-  }
+
+  return selectEstado.value === "dispo";
+
 }
+
+
+// =========================================================
+// ACTUALIZAR BADGE DE INSUMOS SELECCIONADOS
+// =========================================================
 
 function actualizarBadgeSeleccionados() {
+
   const cantidad = insumosSeleccionados.size;
-  badgeSeleccionados.textContent = cantidad === 1
-    ? "1 insumo seleccionado"
-    : `${cantidad} insumos seleccionados`;
-}
-/*
-function obtenerInsumosSeleccionados() {
-  // crearTablaGeneral no le pone ID, por eso se busca dentro de listaInsumos.
-  const checkboxes = listaInsumos.querySelectorAll('input[type="checkbox"]:checked');
-  const seleccionados = [];
-  checkboxes.forEach((checkbox) => {
-    const fila = checkbox.closest("tr");
-    // Se ajustan los índices de las celdas (si 'seleccionar' está true, es la 2da y 3ra celda)
-    const codigo = fila.querySelector("td:nth-child(2)").textContent;
-    const nombre = fila.querySelector("td:nth-child(3)").textContent;
-    seleccionados.push({ codigo: parseInt(codigo), nombre });
-  });
-  return seleccionados;
-}
-  */
-function obtenerInsumosSeleccionados() {
-  const checkboxes = listaInsumos.querySelectorAll('input[type="checkbox"]:checked');
-  const seleccionados = [];
 
-  checkboxes.forEach((checkbox) => {
-    const fila = checkbox.closest("tr");
-    // Obtenemos el código mostrado en la segunda celda (ej: INS-0001)
-    const codigoTexto = fila.querySelector("td:nth-child(2)").textContent.trim();
-    
-    // Buscamos el insumo completo dentro de la lista actual en memoria
-    const insumoEncontrado = insumosActuales.find(ins => ins.codigo === codigoTexto);
-    if (insumoEncontrado) {
-      seleccionados.push(insumoEncontrado);
-    }
-  });
+  badgeSeleccionados.textContent =
+    cantidad === 1
+      ? "1 insumo seleccionado"
+      : `${cantidad} insumos seleccionados`;
 
-  return seleccionados;
 }
+
+
+// =========================================================
+// RENDERIZAR TABLA DE INSUMOS
+// =========================================================
 
 async function renderizarTabla() {
-  listaInsumos.innerHTML = ""; 
+
+  listaInsumos.innerHTML = "";
+
+  // Obtener insumos actualizados
   insumosActuales = await obtenerInsumos();
-  let mostrarDisponibles = estadoActual();
-  let textoBusqueda = inputBuscar.value.trim();
+
+  const mostrarDisponibles = estadoActual();
+  const textoBusqueda = inputBuscar.value.trim();
 
   let insumosFiltrados = [];
-  let insumosFiltradosNoDispo = [];
 
+  // Filtrar según estado
   for (let i = 0; i < insumosActuales.length; i++) {
-    let insumo = insumosActuales[i];
-    let estado = insumo.estado.toLowerCase();
-    if (mostrarDisponibles && estado === "disponible") {
-      insumosFiltrados.push(insumo);
-    } else if (!mostrarDisponibles && estado !== "disponible") {
-      insumosFiltradosNoDispo.push(insumo);
+
+    const insumo = insumosActuales[i];
+    const estado = insumo.estado.toLowerCase();
+
+    if (mostrarDisponibles) {
+
+      // Solo mostrar insumos disponibles y habilitados
+      if (estado === "disponible" && insumo.activo) {
+        insumosFiltrados.push(insumo);
+      }
+
+    } else {
+
+      // Mostrar insumos prestados o no disponibles,
+      // pero nunca los inhabilitados
+      if (estado !== "disponible" && insumo.activo) {
+        insumosFiltrados.push(insumo);
+      }
+
     }
   }
 
-  let tabla;
-  insumosFiltrados = buscarInsumo(insumosFiltrados, textoBusqueda);
+  // Filtrar por texto o numeración
+  insumosFiltrados = buscarInsumo(
+    insumosFiltrados,
+    textoBusqueda
+  );
 
-  if (insumosFiltrados.length > 0) {
-  tabla = crearTablaGeneral(insumosFiltrados, columnasInsumos, {
-    seleccionar: true,
-    seleccionados: new Set(insumosSeleccionados.keys()),
-    onToggle: (insumo, checked) => {
-  if (checked) {
-    insumosSeleccionados.set(insumo.codigo, insumo);
-  } else {
-    insumosSeleccionados.delete(insumo.codigo);
-  }
-  actualizarBadgeSeleccionados();
-}
-  });
-} else {
-  buscarInsumo(insumosFiltradosNoDispo, textoBusqueda);
-  tabla = crearTablaGeneral(insumosFiltradosNoDispo, columnasInsumos, { seleccionar: false });
-}
+  // Crear tabla
+  const tabla = crearTablaGeneral(
+    insumosFiltrados,
+    columnasInsumos,
+    {
+      seleccionar: mostrarDisponibles,
+
+      seleccionados: new Set(
+        insumosSeleccionados.keys()
+      ),
+
+      onToggle: (insumo, checked) => {
+
+        if (checked) {
+
+          insumosSeleccionados.set(
+            insumo.codigo,
+            insumo
+          );
+
+        } else {
+
+          insumosSeleccionados.delete(
+            insumo.codigo
+          );
+
+        }
+
+        actualizarBadgeSeleccionados();
+      }
+    }
+  );
 
   listaInsumos.appendChild(tabla);
+
 }
 
 
-// ----- Funcionalidad para los cuadros informativos de inicio ----------
+// =========================================================
+// CONTADORES DE INSUMOS
+// =========================================================
 
 async function actualizarContadores() {
+
   const insumos = await obtenerInsumos();
 
   let disponibles = 0;
   let prestados = 0;
   let enReparacion = 0;
 
-for (let i = 0; i < insumos.length; i++) {
-  const estado = insumos[i].estado.toLowerCase();
+  for (let i = 0; i < insumos.length; i++) {
 
-  if (estado === "disponible") {
-    disponibles++;
-  } else if (estado === "prestado") {
-    prestados++;
-  } else {
-    enReparacion++;
+    // No contar insumos inhabilitados
+    if (!insumos[i].activo) {
+      continue;
+    }
+
+    const estado = insumos[i].estado.toLowerCase();
+
+    if (estado === "disponible") {
+
+      disponibles++;
+
+    } else if (estado === "prestado") {
+
+      prestados++;
+
+    } else {
+
+      enReparacion++;
+
+    }
   }
+
+  totalInsumos.textContent = disponibles;
+  insumosPrestados.textContent = prestados;
+  insumosReparacion.textContent = enReparacion;
+
 }
 
-totalInsumos.textContent = disponibles;
-insumosPrestados.textContent = prestados;
-insumosReparacion.textContent = enReparacion;
-}
 
-
-// EVENTOS
+// =========================================================
+// INICIALIZACIÓN
+// =========================================================
 
 await actualizarContadores();
 await renderizarTabla();
 
+actualizarBadgeSeleccionados();
 
-// Filtro de estado
-selectEstado.addEventListener("change", renderizarTabla);
 
-//InputBuscar
-inputBuscar.addEventListener("input", renderizarTabla);
+// =========================================================
+// EVENTOS DE FILTROS
+// =========================================================
 
-// Al hacer click en "Nuevo Préstamo" (en el modal)
-btnPrestamo.addEventListener("click", async (e) => {
+// Filtro por estado
+
+selectEstado.addEventListener(
+  "change",
+  renderizarTabla
+);
+
+// Buscador
+
+inputBuscar.addEventListener(
+  "input",
+  renderizarTabla
+);
+
+
+// =========================================================
+// BOTÓN NUEVO PRÉSTAMO
+// =========================================================
+
+btnPrestamo.addEventListener("click", (e) => {
+
   if (insumosSeleccionados.size === 0) {
+
     e.preventDefault();
-    alertaAdvertencia('Atención','Seleccioná al menos un insumo disponible.');
-    return;
-  }
-});
 
-// Al enviar el formulario de préstamo
-/*
-formPrestamo.addEventListener("submit", async (e) => {
-  e.preventDefault();
+    alertaAdvertencia(
+      "Atención",
+      "Seleccioná al menos un insumo disponible."
+    );
 
-  const nombre = inputDestinatario.value.trim();
-  const fecha = inputFecha.value;
-  const observacion = inputobservacion.value
-
-  // Verificar si hay insumos seleccionados (solo para seguridad, ya se chequeó al abrir el modal)
-  if (insumosSeleccionados.length === 0) {
-    alertaAdvertencia('Sin selección','No hay insumos seleccionados para el préstamo.')
     return;
   }
 
-for (let i = 0; i < insumosSeleccionados.length; i++) {
-  const insumo = insumosSeleccionados[i];
-
-  const nuevoPrestamo = {
-    codigoInsumo: insumo.codigo, // Código del insumo
-    insumo: insumo.nombre,
-    destinatario: nombre,
-    fecha: fecha, // Fecha del préstamo
-    observacion: observacion,
-    estado: "activo"
-  };
-
-  guardarPrestamo(nuevoPrestamo);
-  actualizarContadores();
-}
-
-  actualizarInsumosPrestados(insumosSeleccionados);
-
-  // Resetear formulario y variables
-  formPrestamo.reset();
-  insumosSeleccionados = [];
-
-  renderizarTabla();
-  actualizarContadores();
-  modalPrestamo.hide(); // Cierra el modal
-
-  alertaExito('Préstamo registrado','El préstamo se registró correctamente.')
-
-
 });
-*/
+
+
+// =========================================================
+// FECHA AUTOMÁTICA AL ABRIR EL MODAL
+// =========================================================
+
+elementoModal.addEventListener(
+  "show.bs.modal",
+  () => {
+
+    // Colocar fecha actual
+    inputFecha.value = obtenerFechaActual();
+
+    // Actualizar campos visibles
+    actualizarCamposDestinatario();
+
+  }
+);
+
+
+// =========================================================
+// REGISTRAR PRÉSTAMO
+// =========================================================
 
 formPrestamo.addEventListener("submit", async (e) => {
+
   e.preventDefault();
 
-  const nombreDestinatario = inputDestinatario.value.trim();
-  const tipo = selectTipoDestinatario.value;
+  // -------------------------------------------------------
+  // DATOS DEL DESTINATARIO
+  // -------------------------------------------------------
 
-  const carrera = tipo === "estudiante"
-    ? inputCarrera.value
-    : null;
+  const nombreDestinatario =
+    inputDestinatario.value.trim();
 
-  const anio = tipo === "estudiante"
-    ? inputAnio.value
-    : null;
+  const tipo = obtenerTipoDestinatario();
 
-  const curso = tipo === "estudiante"
-    ? inputCurso.value.trim()
-    : null;
+  // Datos académicos comunes
+  const carrera = inputCarrera.value;
+  const anio = inputAnio.value;
+  const curso = inputCurso.value.trim();
 
+  // Solo estudiantes tienen profesor a cargo
   const aCargo = tipo === "estudiante"
     ? inputACargo.value.trim()
     : null;
 
-  const fecha = inputFecha.value;
-  const observacion = inputobservacion.value;
+  // -------------------------------------------------------
+  // DATOS DEL PRÉSTAMO
+  // -------------------------------------------------------
 
+  const fecha = inputFecha.value;
+  const observacion = inputObservacion.value.trim();
+
+
+  // =======================================================
+  // VALIDACIONES
+  // =======================================================
+
+  // Verificar selección de insumos
   if (insumosSeleccionados.size === 0) {
+
     alertaAdvertencia(
       "Sin selección",
       "No hay insumos seleccionados para el préstamo."
     );
+
     return;
   }
 
+  // Verificar tipo
+  if (tipo !== "estudiante" && tipo !== "profesor") {
+
+    alertaAdvertencia(
+      "Tipo de destinatario",
+      "Seleccioná si el destinatario es estudiante o profesor."
+    );
+
+    return;
+  }
+
+  // Verificar datos obligatorios
+  if (
+    !nombreDestinatario ||
+    !carrera ||
+    !anio ||
+    !curso
+  ) {
+
+    alertaAdvertencia(
+      "Campos incompletos",
+      "Completá nombre, carrera, año y curso."
+    );
+
+    return;
+  }
+
+  // Verificar profesor a cargo para estudiantes
+  if (tipo === "estudiante" && !aCargo) {
+
+    alertaAdvertencia(
+      "Campo obligatorio",
+      "Ingresá el nombre del profesor a cargo."
+    );
+
+    return;
+  }
+
+  // Verificar fecha
+  if (!fecha) {
+
+    alertaAdvertencia(
+      "Fecha obligatoria",
+      "Ingresá la fecha del préstamo."
+    );
+
+    return;
+  }
+
+
+  // =======================================================
+  // GUARDAR PRÉSTAMOS
+  // =======================================================
+
   try {
+
+    // Registrar cada insumo seleccionado
     for (const insumo of insumosSeleccionados.values()) {
 
       await guardarPrestamo({
+
         id_insumo: insumo.id,
+
+        // Destinatario
         id_destinatario: nombreDestinatario,
+        tipo_destinatario: tipo,
+
+        // Datos académicos
         carrera: carrera,
         anio: anio,
         curso: curso,
         a_cargo: aCargo,
+
+        // Préstamo
         fecha_entrega: fecha,
         obs: observacion
+
       });
 
     }
 
+
+    // =====================================================
+    // LIMPIAR FORMULARIO
+    // =====================================================
+
     formPrestamo.reset();
+
     insumosSeleccionados.clear();
 
-    datosEstudiante.style.display = "none";
+    actualizarCamposDestinatario();
 
     actualizarBadgeSeleccionados();
 
+
+    // =====================================================
+    // ACTUALIZAR INTERFAZ
+    // =====================================================
+
     await renderizarTabla();
     await actualizarContadores();
+
+
+    // =====================================================
+    // CERRAR MODAL
+    // =====================================================
 
     modalPrestamo.hide();
 
@@ -319,8 +541,11 @@ formPrestamo.addEventListener("submit", async (e) => {
     );
 
   } catch (error) {
+
     alertaError(
       error.message || "Ocurrió un error al registrar el préstamo."
     );
+
   }
+
 });

@@ -123,11 +123,16 @@ export function buscarInsumo(insumos, valor) {
   for (let i = 0; i < insumos.length; i++) {
     const insumo = insumos[i];
     let nombre = "";
+    let numeracion = "";
+    
     if (insumo.nombre) {
       nombre = insumo.nombre.toLowerCase();
     }
+    if (insumo.numeracion) {
+      numeracion = String(insumo.numeracion).toLowerCase();
+    }
 
-    if (nombre.includes(texto)) {
+    if (nombre.includes(texto) || numeracion.includes(texto)) {
       resultado.push(insumo);
     }
   }
@@ -377,4 +382,16 @@ export function crearGridInsumos(datos, opciones) {
   }
 
   return grid;
+}
+
+//Fecha actual para el input de fecha en prestamos.html
+
+export function obtenerFechaActual() {
+  const hoy = new Date();
+
+  const anio = hoy.getFullYear();
+  const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+  const dia = String(hoy.getDate()).padStart(2, "0");
+
+  return `${anio}-${mes}-${dia}`;
 }
