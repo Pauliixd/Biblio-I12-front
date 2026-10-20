@@ -203,6 +203,18 @@ export async function obtenerInsumos() {
   return insumos.map(adaptarInsumo);
 }
 
+
+export async function obtenerSiguienteNumeracion(nombre) {
+  return pedido(
+    `${BASE_URL}/insumos/siguiente-numeracion/?nombre=${encodeURIComponent(nombre)}`,
+    {
+      method: "GET",
+      headers: headersAuth()
+    }
+  );
+}
+
+
 // El campo "codigo" (tipo "INS-0001") ya NO se genera acá: el backend lo
 // arma automáticamente para cada unidad creada, con la misma lógica de
 // siempre (correlativo INS-XXXX), solo que ahora resuelta del lado del

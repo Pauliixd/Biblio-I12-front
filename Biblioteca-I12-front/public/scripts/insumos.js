@@ -2,7 +2,7 @@
 
 // IMPORTS
 import {
-  obtenerInsumos, guardarInsumo, actualizarInsumo, eliminarInsumo,
+  obtenerInsumos, guardarInsumo, obtenerSiguienteNumeracion, actualizarInsumo, eliminarInsumo,
 } from "../bbdd/api.js";
 
 import { crearTablaGeneral, buscarInsumo } from "./funciones.js";
@@ -33,6 +33,40 @@ const columnasInsumos = [
 ];
 
 // FUNCIONES
+
+
+let consultaNumeracion = 0;
+
+inputNombreAlta.addEventListener("blur", async () => {
+  const nombre = inputNombreAlta.value.trim();
+  const consultaActual = ++consultaNumeracion;
+
+  if (nombre === "") {
+    return;
+  }
+
+  try {
+    const resultado = await obtenerSiguienteNumeracion(nombre);
+
+    // Evita aplicar una respuesta de una consulta anterior
+    if (consultaActual !== consultaNumeracion) {
+      return;
+    }
+
+    if (inputNombreAlta.value.trim() !== nombre) {
+      return;
+    }
+
+    // Solo sugerir si el bibliotecario no escribió un número
+    if (inputNumeracionAlta.value.trim() === "") {
+      inputNumeracionAlta.value =
+        resultado.numeracion_sugerida;
+    }
+
+  } catch (error) {
+    console.error("Error al consultar numeración:", error);
+  }
+});
 
 
 function crearBotoneraAcciones(insumo) {
