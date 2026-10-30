@@ -187,7 +187,6 @@ function actualizarBadgeSeleccionados() {
 
 async function renderizarTabla() {
 
-  listaInsumos.innerHTML = "";
 
   // Obtener insumos actualizados
   insumosActuales = await obtenerInsumos();
@@ -260,7 +259,7 @@ async function renderizarTabla() {
     }
   );
 
-  listaInsumos.appendChild(tabla);
+  listaInsumos.replaceChildren(tabla);
 
 }
 

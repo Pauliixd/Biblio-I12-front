@@ -2,8 +2,8 @@
 // Reemplazo de bd.js: habla con el backend real (FastAPI) en vez de localStorage.
 // Va en public/bbdd/api.js, al lado de bd.js.
 
-//const BASE_URL = "http://127.0.0.1:8000"; // cambiar si el back corre en otro puerto/host
-const BASE_URL = "https://back-biblio-lfhc.onrender.com";
+const BASE_URL = "http://127.0.0.1:8000"; // cambiar si el back corre en otro puerto/host
+//const BASE_URL = "https://back-biblio-lfhc.onrender.com";
 
 // ---------------------------------------------------------
 // IDs fijos de EstadoInsumo 
@@ -345,6 +345,8 @@ export async function actualizarInsumosPrestados(insumosPrestados) {
   }
 }
 
+
+//Me acepte editar el numero inicial y el codigo de inventario (todo el insumo)
 export async function actualizarInsumo(id, datos) {
   const body = {};
 
