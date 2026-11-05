@@ -187,6 +187,11 @@
             </p>
 
             <p>
+              <strong>Fecha de devolución:</strong>
+              <span id="detalleFechaDevolucion">—</span>
+            </p>
+
+            <p>
               <strong>Estado:</strong>
               <span id="detalleEstado"></span>
             </p>
@@ -262,6 +267,106 @@
 
           </div>
 
+        </div>
+      </div>
+    </div>
+    <!-- MODAL EDITAR PRÉSTAMO -->
+    <div class="modal fade" id="modalEditarPrestamo" tabindex="-1" aria-labelledby="modalEditarPrestamoLabel"
+      aria-hidden="true">
+
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalEditarPrestamoLabel">
+              Editar préstamo
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+
+          <div class="modal-body">
+
+            <form id="formEditarPrestamo">
+
+              <input type="hidden" id="editPrestamoId">
+
+              <div class="mb-3">
+                <label for="editPrestamoDestinatario" class="form-label">
+                  Nombre y apellido
+                </label>
+                <input type="text" class="form-control" id="editPrestamoDestinatario" maxlength="50">
+              </div>
+
+              <div class="mb-3">
+                <label for="editPrestamoTipo" class="form-label">
+                  Tipo de destinatario
+                </label>
+                <select class="form-select" id="editPrestamoTipo" required>
+                  <option value="">Seleccionar...</option>
+                  <option value="estudiante">Estudiante</option>
+                  <option value="profesor">Profesor</option>
+                </select>
+              </div>
+
+              <div id="editDatosAcademicos">
+
+                <div class="mb-3">
+                  <label for="editPrestamoCarrera" class="form-label">Carrera</label>
+                  <input type="text" class="form-control" id="editPrestamoCarrera" maxlength="50">
+                </div>
+
+                <div class="row g-3 mb-3">
+                  <div class="col-md-6">
+                    <label for="editPrestamoAnio" class="form-label">Año</label>
+                    <select class="form-select" id="editPrestamoAnio">
+                      <option value="">Sin especificar</option>
+                      <option value="1">1° año</option>
+                      <option value="2">2° año</option>
+                      <option value="3">3° año</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="editPrestamoCurso" class="form-label">Curso</label>
+                    <input type="text" class="form-control" id="editPrestamoCurso" maxlength="20">
+                  </div>
+                </div>
+
+                <div class="mb-3" id="editContenedorACargo">
+                  <label for="editPrestamoACargo" class="form-label">
+                    Profesor a cargo
+                  </label>
+                  <input type="text" class="form-control" id="editPrestamoACargo" maxlength="50">
+                </div>
+
+              </div>
+
+              <div class="mb-3">
+                <label for="editPrestamoFecha" class="form-label">
+                  Fecha del préstamo
+                </label>
+                <input type="date" class="form-control" id="editPrestamoFecha" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="editPrestamoObservacion" class="form-label">
+                  Observación
+                </label>
+                <textarea class="form-control" id="editPrestamoObservacion" maxlength="70" rows="2"></textarea>
+              </div>
+
+              <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                  Cancelar
+                </button>
+                <button type="submit" class="btn btn-danger" id="btnGuardarEdicionPrestamo">
+                  Guardar cambios
+                </button>
+              </div>
+
+            </form>
+
+          </div>
         </div>
       </div>
     </div>

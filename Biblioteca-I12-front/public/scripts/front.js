@@ -123,15 +123,16 @@ function actualizarCamposDestinatario() {
   datosEstudiante.style.display =
     mostrarDatos ? "block" : "none";
 
-  inputCarrera.required = mostrarDatos;
-  inputAnio.required = mostrarDatos;
-  inputCurso.required = mostrarDatos;
+  inputCarrera.required = false;
+  inputAnio.required = false;
+  inputCurso.required = false;
+  inputACargo.required = false;
 
   // Profesor a cargo solamente para estudiantes
   contenedorACargo.style.display =
     esEstudiante ? "block" : "none";
 
-  inputACargo.required = esEstudiante;
+
 
   if (!esEstudiante) {
     inputACargo.value = "";
@@ -431,33 +432,6 @@ formPrestamo.addEventListener("submit", async (e) => {
     alertaAdvertencia(
       "Tipo de destinatario",
       "Seleccioná si el destinatario es estudiante o profesor."
-    );
-
-    return;
-  }
-
-  // Verificar datos obligatorios
-  if (
-    !nombreDestinatario ||
-    !carrera ||
-    !anio ||
-    !curso
-  ) {
-
-    alertaAdvertencia(
-      "Campos incompletos",
-      "Completá nombre, carrera, año y curso."
-    );
-
-    return;
-  }
-
-  // Verificar profesor a cargo para estudiantes
-  if (tipo === "estudiante" && !aCargo) {
-
-    alertaAdvertencia(
-      "Campo obligatorio",
-      "Ingresá el nombre del profesor a cargo."
     );
 
     return;

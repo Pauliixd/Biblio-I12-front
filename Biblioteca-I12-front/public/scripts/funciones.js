@@ -114,6 +114,7 @@ export function crearTablaGeneral(datos, columnas, opciones) {
 
 export function buscarInsumo(insumos, valor) {
   const texto = valor.trim().toLowerCase();
+
   if (texto === "") {
     return insumos;
   }
@@ -122,17 +123,18 @@ export function buscarInsumo(insumos, valor) {
 
   for (let i = 0; i < insumos.length; i++) {
     const insumo = insumos[i];
-    let nombre = "";
-    let numeracion = "";
-    
-    if (insumo.nombre) {
-      nombre = insumo.nombre.toLowerCase();
-    }
-    if (insumo.numeracion) {
-      numeracion = String(insumo.numeracion).toLowerCase();
-    }
 
-    if (nombre.includes(texto) || numeracion.includes(texto)) {
+    const nombre = (insumo.nombre || "").toLowerCase();
+    const numeracion = insumo.numeracion == null
+      ? ""
+      : String(insumo.numeracion);
+
+    const nombreCompleto = `${nombre} ${numeracion}`.trim();
+
+    if (
+      nombreCompleto.includes(texto) ||
+      numeracion.includes(texto)
+    ) {
       resultado.push(insumo);
     }
   }

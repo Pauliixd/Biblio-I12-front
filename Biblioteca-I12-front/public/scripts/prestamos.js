@@ -57,6 +57,15 @@ const columnas = [
 
 ];
 
+const columnasHistorial = [
+    ...columnas,
+    {
+        clave: "fecha_devolucion",
+        texto: "Fecha de devolución",
+        render: (item) => item.fecha_devolucion || "—"
+    }
+];
+
 
 // ---------------------------------------------------------
 // MODAL INFORMACIÓN
@@ -65,6 +74,16 @@ const columnas = [
 const modalDetalle = new bootstrap.Modal(
   document.getElementById("modalDetallePrestamo")
 );
+// ---------------------------------------------------------
+// MODAL EDITAR
+// ---------------------------------------------------------
+
+const modalEditarPrestamo = bootstrap.Modal.getOrCreateInstance(
+  document.getElementById("modalEditarPrestamo")
+);
+const formEditarPrestamo = document.getElementById("formEditarPrestamo");
+const editPrestamoTipo = document.getElementById("editPrestamoTipo");
+const editContenedorACargo = document.getElementById("editContenedorACargo");
 
 
 function mostrarDato(valor) {
@@ -90,6 +109,8 @@ function abrirModalDetalle(prestamo) {
   document.getElementById("detalleDestinatario").textContent =
     mostrarDato(prestamo.destinatario);
 
+  document.getElementById("detalleFechaDevolucion").textContent =
+    mostrarDato(prestamo.fecha_devolucion);
 
   // DETERMINAR TIPO DE DESTINATARIO
 
@@ -144,6 +165,50 @@ function abrirModalDetalle(prestamo) {
   // MOSTRAR MODAL
 
   modalDetalle.show();
+}
+
+function actualizarCamposEdicion() {
+  const esEstudiante = editPrestamoTipo.value === "estudiante";
+
+  editContenedorACargo.style.display =
+    esEstudiante ? "block" : "none";
+}
+
+editPrestamoTipo.addEventListener("change", actualizarCamposEdicion);
+
+
+function abrirModalEditarPrestamo(prestamo) {
+
+  document.getElementById("editPrestamoId").value =
+    prestamo.idTransaccion;
+
+  document.getElementById("editPrestamoDestinatario").value =
+    prestamo.destinatario || "";
+
+  editPrestamoTipo.value =
+    prestamo.tipo_destinatario || "";
+
+  document.getElementById("editPrestamoCarrera").value =
+    prestamo.carrera || "";
+
+  document.getElementById("editPrestamoAnio").value =
+    prestamo.anio ?? "";
+
+  document.getElementById("editPrestamoCurso").value =
+    prestamo.curso || "";
+
+  document.getElementById("editPrestamoACargo").value =
+    prestamo.a_cargo || "";
+
+  document.getElementById("editPrestamoFecha").value =
+    prestamo.fecha || "";
+
+  document.getElementById("editPrestamoObservacion").value =
+    prestamo.observacion || "";
+
+  actualizarCamposEdicion();
+
+  modalEditarPrestamo.show();
 }
 
 // ---------------------------------------------------------
@@ -410,6 +475,7 @@ function crearBotonComentario(prestamo) {
   }
 
 
+
   btnComentario.addEventListener(
     "click",
     (e) => {
@@ -425,6 +491,22 @@ function crearBotonComentario(prestamo) {
 
 
   return btnComentario;
+}
+
+function crearBotonEditar(prestamo) {
+  const boton = document.createElement("button");
+
+  boton.type = "button";
+  boton.className = "btn btn-outline-primary btn-sm";
+  boton.innerHTML = '<i class="bi bi-pencil-square"></i>';
+  boton.title = "Editar préstamo";
+
+  boton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    abrirModalEditarPrestamo(prestamo);
+  });
+
+  return boton;
 }
 
 
@@ -627,17 +709,18 @@ async function renderizarTablas() {
                 );
 
 
-              // Separación del comentario
-              btnComentario.classList.add(
-                "ms-4"
-              );
+              // Botón editar
+              const btnEditar = crearBotonEditar(prestamo);
 
+              // Contenedor de acciones
+              const divAcciones = document.createElement("div");
+              divAcciones.className = "d-flex gap-2 ms-3";
+
+              // Agrupar botones
+              divAcciones.append(btnEditar, btnComentario);
 
               // Agregar al contenedor principal
-              div.append(
-                divEstados,
-                btnComentario
-              );
+              div.append(divEstados, divAcciones);
 
 
               return div;
@@ -744,16 +827,15 @@ async function renderizarTablas() {
                 );
 
 
-              btnComentario.classList.add(
-                "ms-4"
-              );
-
-
               // Agregar al contenedor
-              div.append(
-                divEstados,
-                btnComentario
-              );
+              const btnEditar = crearBotonEditar(prestamo);
+
+              const divAcciones = document.createElement("div");
+              divAcciones.className = "d-flex gap-2 ms-3";
+
+              divAcciones.append(btnEditar, btnComentario);
+
+              div.append(divEstados, divAcciones);
 
 
               return div;
@@ -789,7 +871,7 @@ async function renderizarTablas() {
 
           devueltosFiltrados,
 
-          columnas,
+          columnasHistorial,
 
           {
 
@@ -810,14 +892,12 @@ async function renderizarTablas() {
                 );
 
 
-              btnComentario.classList.add(
-                "ms-4"
-              );
+              const divAcciones = document.createElement("div");
+              divAcciones.className = "d-flex gap-2 ms-3";
 
+              divAcciones.append(btnComentario);
 
-              div.append(
-                btnComentario
-              );
+              div.append(divAcciones);
 
 
               return div;
@@ -851,6 +931,75 @@ async function renderizarTablas() {
   }
 
 }
+
+formEditarPrestamo.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const id = Number(
+    document.getElementById("editPrestamoId").value
+  );
+
+  const tipo = editPrestamoTipo.value;
+
+  const datos = {
+    id_destinatario:
+      document.getElementById("editPrestamoDestinatario").value.trim() || null,
+
+    tipo_destinatario: tipo,
+
+    carrera:
+      document.getElementById("editPrestamoCarrera").value.trim() || null,
+
+    anio:
+      document.getElementById("editPrestamoAnio").value
+        ? Number(document.getElementById("editPrestamoAnio").value)
+        : null,
+
+    curso:
+      document.getElementById("editPrestamoCurso").value.trim() || null,
+
+    a_cargo:
+      tipo === "estudiante"
+        ? document.getElementById("editPrestamoACargo").value.trim() || null
+        : null,
+
+    fecha_entrega:
+      document.getElementById("editPrestamoFecha").value,
+
+    obs:
+      document.getElementById("editPrestamoObservacion").value.trim()
+  };
+
+  const boton = document.getElementById("btnGuardarEdicionPrestamo");
+
+  boton.disabled = true;
+
+  try {
+    await modificarPrestamo(id, datos);
+
+    modalEditarPrestamo.hide();
+
+    await renderizarTablas();
+
+    Swal.fire({
+      title: "Préstamo actualizado",
+      text: "Los cambios se guardaron correctamente.",
+      icon: "success",
+      timer: 1800,
+      showConfirmButton: false
+    });
+
+  } catch (error) {
+    Swal.fire({
+      title: "Error al actualizar",
+      text: error.message || "No se pudo modificar el préstamo.",
+      icon: "error"
+    });
+
+  } finally {
+    boton.disabled = false;
+  }
+});
 
 
 // ---------------------------------------------------------

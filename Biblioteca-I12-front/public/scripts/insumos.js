@@ -20,6 +20,9 @@ const botonConfirmarEdicion = document.getElementById("submitEditar");
 const editCodigo = document.getElementById('editCodigo'); // ahora guarda el id numérico del backend
 const editNombre = document.getElementById('editNombre');
 const editEstado = document.getElementById('editEstado');
+const editNumeracion = document.getElementById("editNumeracion");
+const editNumeroInventario = document.getElementById("editNumeroInventario");
+const formEditarInsumo = document.getElementById("formEditarInsumo");
 const editObservacion = document.getElementById('editObservacion');
 const inputNumeroInventarioAlta = document.getElementById("numeroInventario");
 const inputNumeracionAlta = document.getElementById("numeracion");
@@ -207,34 +210,25 @@ async function renderizarTablaInsumos() {
 }
 
 function abrirModalEditarInsumo(insumo) {
-  editCodigo.value = insumo.id; // id real del backend, no el código de negocio
-  editNombre.value = insumo.nombre;
-  editEstado.value = insumo.estado;
-  editObservacion.value = insumo.observacion || '';
 
-  if (insumo.estado === "Prestado") {
-    alertaError("No se puede modificar un insumo Prestado");
+  if (insumo.activo === false) {
+    alertaError("No se puede modificar un insumo inhabilitado.");
     return;
   }
 
+  if (insumo.estado === "Prestado") {
+    alertaError("No se puede modificar un insumo prestado.");
+    return;
+  }
+
+  editCodigo.value = insumo.id;
+  editNombre.value = insumo.nombre;
+  editNumeracion.value = insumo.numeracion ?? "";
+  editNumeroInventario.value = insumo.numero_inventario ?? "";
+  editEstado.value = insumo.estado;
+  editObservacion.value = insumo.observacion || "";
+
   modalEditar.show();
-
-  botonConfirmarEdicion.addEventListener("click", async (e) => {
-    e.preventDefault();
-
-    try {
-      await actualizarInsumo(insumo.id, {
-        nombre: editNombre.value,
-        estado: editEstado.value,
-        observacion: editObservacion.value,
-      });
-      await renderizarTablaInsumos();
-      modalEditar.hide();
-      alertaExito('Actualización exitosa', `Se actualizó el insumo "${editNombre.value.toUpperCase()}" correctamente.`);
-    } catch (err) {
-      alertaError(err.message || "No se pudo modificar");
-    }
-  }, { once: true });
 }
 
 // EVENTOS
@@ -272,3 +266,58 @@ formRegistroInsumo.addEventListener("submit", async (e) => {
 });
 
 inputBuscar.addEventListener('input', renderizarTablaInsumos);
+
+formEditarInsumo.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const id = Number(editCodigo.value);
+
+  const nombre = editNombre.value.trim();
+  const numeracion = Number(editNumeracion.value);
+  const numero_inventario = editNumeroInventario.value.trim();
+  const estado = editEstado.value;
+  const observacion = editObservacion.value.trim();
+
+  if (nombre === "") {
+    alertaAdvertencia(
+      "Nombre inválido",
+      "El nombre del insumo no puede estar vacío."
+    );
+    return;
+  }
+
+  if (!Number.isInteger(numeracion) || numeracion < 1) {
+    alertaAdvertencia(
+      "Numeración inválida",
+      "La numeración debe ser un número entero mayor a cero."
+    );
+    return;
+  }
+
+  botonConfirmarEdicion.disabled = true;
+
+  try {
+    await actualizarInsumo(id, {
+      nombre,
+      numeracion,
+      numero_inventario,
+      estado,
+      observacion
+    });
+
+    modalEditar.hide();
+
+    await renderizarTablaInsumos();
+
+    alertaExito(
+      "Actualización exitosa",
+      `Se actualizó el insumo "${nombre} ${numeracion}" correctamente.`
+    );
+
+  } catch (error) {
+    alertaError(error.message || "No se pudo modificar el insumo.");
+
+  } finally {
+    botonConfirmarEdicion.disabled = false;
+  }
+});

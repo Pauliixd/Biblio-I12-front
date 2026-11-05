@@ -3,7 +3,9 @@
 // Va en public/bbdd/api.js, al lado de bd.js.
 
 //const BASE_URL = "http://127.0.0.1:8000"; // cambiar si el back corre en otro puerto/host
-const BASE_URL = "https://back-biblio-lfhc.onrender.com";
+//const BASE_URL = "https://back-biblio-lfhc.onrender.com";
+const BASE_URL = "http://127.0.0.1:8000";
+// const BASE_URL = "https://back-biblio-lfhc.onrender.com";
 
 // ---------------------------------------------------------
 // IDs fijos de EstadoInsumo 
@@ -273,22 +275,26 @@ export async function guardarPrestamo({
   fecha_entrega,
   obs
 }) {
+
   const body = {
     id_insumo: Number(id_insumo),
-    id_destinatario: String(id_destinatario),
-    tipo_destinatario: tipo_destinatario,
-    carrera: carrera || null,
+
+    id_destinatario: id_destinatario?.trim() || null,
+    tipo_destinatario: tipo_destinatario || null,
+
+    carrera: carrera?.trim() || null,
     anio: anio ? Number(anio) : null,
-    curso: curso || null,
-    a_cargo: a_cargo || null,
+    curso: curso?.trim() || null,
+    a_cargo: a_cargo?.trim() || null,
+
     fecha_entrega: fecha_entrega,
-    obs: obs || ""
+    obs: obs?.trim() || ""
   };
 
   return pedido(`${BASE_URL}/prestamos/`, {
     method: "POST",
     headers: headersAuth(),
-    body: JSON.stringify(body),
+    body: JSON.stringify(body)
   });
 }
 
@@ -351,7 +357,15 @@ export async function actualizarInsumo(id, datos) {
   const body = {};
 
   if (datos.nombre !== undefined) {
-    body.nombre = datos.nombre;
+    body.nombre = datos.nombre.trim();
+  }
+
+  if (datos.numeracion !== undefined) {
+    body.numeracion = Number(datos.numeracion);
+  }
+
+  if (datos.numero_inventario !== undefined) {
+    body.numero_inventario = datos.numero_inventario;
   }
 
   if (datos.estado !== undefined) {
